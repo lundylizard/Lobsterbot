@@ -8,6 +8,11 @@
     <artifactId>lobsterbot</artifactId>
     <version>1.0-Lobster</version>
 
+    <properties>
+        <maven.compiler.source>12</maven.compiler.source>
+        <maven.compiler.target>12</maven.compiler.target>
+    </properties>
+
     <dependencies>
 
         <dependency>
