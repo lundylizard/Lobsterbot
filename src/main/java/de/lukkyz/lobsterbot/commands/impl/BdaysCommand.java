@@ -8,6 +8,8 @@ import java.util.Random;
 
 public class BdaysCommand implements Command {
 
+    //TODO REMAKE
+
     @Override
     public void action(String[] args, MessageReceivedEvent event) {
 

@@ -3,7 +3,9 @@ package de.lukkyz.lobsterbot;
 import de.lukkyz.lobsterbot.commands.CommandHandler;
 import de.lukkyz.lobsterbot.commands.impl.BdaysCommand;
 import de.lukkyz.lobsterbot.commands.impl.InfoCommand;
+import de.lukkyz.lobsterbot.commands.impl.ReminderCommand;
 import de.lukkyz.lobsterbot.listeners.MessageListener;
+import de.lukkyz.lobsterbot.listeners.ReadyListener;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDABuilder;
 
@@ -25,9 +27,11 @@ public class Lobsterbot {
 
         /* Register Event Listeners */
         builder.addEventListeners(new MessageListener());
+        builder.addEventListeners(new ReadyListener());
 
         CommandHandler.commands.put("bdays", new BdaysCommand());
         CommandHandler.commands.put("info", new InfoCommand());
+        CommandHandler.commands.put("remind", new ReminderCommand());
 
         builder.build();
 
