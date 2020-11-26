@@ -1,9 +1,12 @@
 package de.lukkyz.lobsterbot.commands.impl;
 
+import de.lukkyz.lobsterbot.Lobsterbot;
 import de.lukkyz.lobsterbot.commands.Command;
+import de.lukkyz.lobsterbot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.io.IOException;
 import java.util.Random;
 
 public class BdaysCommand implements Command {
@@ -15,7 +18,11 @@ public class BdaysCommand implements Command {
 
         if (args.length < 1) {
 
-            event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("**Official Lobster Gang Birthdays**").setColor(new Random().nextInt()).setDescription(decodeBirthday(/* TODO */null)).build()).queue();
+            Lobsterbot.data.connect();
+            String bdays = Lobsterbot.data.getBdays();
+
+            event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("**Official Lobster Gang Birthdays**").setColor(new Random().nextInt()).setDescription(bdays.replace("#", "\n")).build()).queue();
+
 
         } else {
 
@@ -38,22 +45,33 @@ public class BdaysCommand implements Command {
         return false;
     }
 
-    private String decodeBirthday(String input) {
-        /* "09/09-lucas#10/09-the_lobster_gang#" */
+    private String decodeBirthday(String input) throws IOException {
+        /* FORMAT: "dd/mm-name#dd/mm-name_with_spaces#" */
+
 
         if (input != null) {
 
-            String[] date = input.split("/");
+            String[] bday = input.split("#");
+
+            String formatted_string = "";
+
+            for (int i = 0; i < bday.length; i++) {
+
+                String days = bday[i].substring(0, 2);
+                String month = bday[i].substring(3, 5);
+                String name = bday[i].split("-")[1];
+                formatted_string += days + "/" + month + " -- " + name + "\n";
+
+            }
+
+            return formatted_string.replace("_", " ");
 
 
         } else {
 
-            return "File Not Found";
+            return "File Not Found " + Utils.generateEmote();
 
         }
-
-
-        return "null";
 
     }
 

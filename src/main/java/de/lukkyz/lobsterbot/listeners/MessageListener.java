@@ -11,6 +11,8 @@ import java.util.concurrent.TimeUnit;
 
 public class MessageListener extends ListenerAdapter {
 
+    public static int count = 0;
+
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
 
@@ -29,5 +31,8 @@ public class MessageListener extends ListenerAdapter {
             CommandHandler.handleCommand(CommandHandler.parser.parse(event.getMessage().getContentRaw(), event));
 
         }
+
+        count++;
+
     }
 }
