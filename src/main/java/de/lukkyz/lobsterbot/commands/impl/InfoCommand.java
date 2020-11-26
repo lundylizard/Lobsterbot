@@ -25,10 +25,10 @@ public class InfoCommand implements Command {
         content += "**Server Owner:** " + event.getGuild().getOwner().getAsMention() + "\n";
         content += "Members: " + event.getGuild().getMembers().size() + " | Emotes: " + event.getGuild().getEmotes().size() + "\n\n";
 
-        content += "Commands (" + CommandHandler.commands.size() + "): \n> " + CommandHandler.commands.keySet().toString().replace("[", "").replace("]", "") + "\n";
-        content += "__Commands executed this session:__ **" + CommandParser.count + "** | __Messages sent:__ **" + MessageListener.count + "**";
+        content += "Commands (" + CommandHandler.commands.size() + "): \n> " + CommandHandler.commands.keySet().toString().replace("[", "").replace("]", "") + "\n\n";
+        content += "__Commands executed this session:__ **" + (CommandParser.count - 1) + "** | __Messages sent this session:__ **" + MessageListener.count + "**";
 
-        event.getMessage().getTextChannel().sendMessage(new EmbedBuilder().setDescription(content).setTitle("Server and Bot Info").setFooter(event.getMessage().getId() + "-" + event.getTextChannel().getName(), event.getAuthor().getAvatarUrl()).setThumbnail(event.getJDA().getSelfUser().getAvatarUrl()).setColor(Color.RED).build()).queue();
+        event.getMessage().getTextChannel().sendMessage(new EmbedBuilder().setDescription(content).setTitle("__Server and Bot Info__:").setFooter(event.getMessage().getId() + "-" + event.getTextChannel().getName(), event.getAuthor().getAvatarUrl()).setThumbnail(event.getJDA().getSelfUser().getAvatarUrl()).setColor(Color.RED).build()).queue();
 
 
 

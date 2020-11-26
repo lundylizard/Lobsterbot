@@ -13,7 +13,7 @@ public class CommandParser {
 
         String beheaded = raw.replaceFirst(Lobsterbot.PREFIX, "");
         String[] splitBeheaded = beheaded.split(" ");
-        String invoke = splitBeheaded[0];
+        String invoke = splitBeheaded[0].toLowerCase();
         ArrayList<String> split = new ArrayList<>();
         for (String s : splitBeheaded) {
             split.add(s);

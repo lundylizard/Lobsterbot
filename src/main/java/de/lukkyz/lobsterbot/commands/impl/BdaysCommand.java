@@ -19,9 +19,17 @@ public class BdaysCommand implements Command {
         if (args.length < 1) {
 
             Lobsterbot.data.connect();
-            String bdays = Lobsterbot.data.getBdays();
+            String bdays = "";
+            String[] kiddo = Lobsterbot.data.getBdays().split("#");
+            String[] info = {};
 
-            event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("**Official Lobster Gang Birthdays**").setColor(new Random().nextInt()).setDescription(bdays.replace("#", "\n")).build()).queue();
+            for (int i = 0; i < kiddo.length; i++) {
+                info = kiddo[i].split(",");
+            }
+
+            bdays += info[2].toUpperCase() + " " + info[1] + " -- " + info[3] + "\n";
+
+            event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("**Official Lobster Gang Birthdays**").setColor(new Random().nextInt()).setDescription(bdays).build()).queue();
 
 
         } else {
