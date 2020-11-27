@@ -58,7 +58,7 @@ public class LobsterDatabase {
 
                 String id = results.getString("discord_id");
                 int day = results.getInt("day");
-                String month = results.getString("month");
+                int month = results.getInt("month");
                 String name = results.getString("name");
 
 
@@ -80,4 +80,22 @@ public class LobsterDatabase {
         }
     }
 
+    public ResultSet getBdaysExperimental() {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            return statement.executeQuery("select * from persons");
+
+        } catch (SQLException sqlE) {
+            sqlE.printStackTrace();
+        } finally {
+            //TODO statement.close();
+            disconnect();
+        }
+
+        return null;
+
+    }
 }

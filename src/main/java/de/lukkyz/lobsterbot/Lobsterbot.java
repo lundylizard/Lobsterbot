@@ -9,6 +9,7 @@ import de.lukkyz.lobsterbot.listeners.ReadyListener;
 import de.lukkyz.lobsterbot.utils.LobsterDatabase;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
 
 import javax.security.auth.login.LoginException;
 
@@ -21,13 +22,12 @@ public class Lobsterbot {
     /* Bot Variables*/
     public static final String PREFIX = "!";
 
-    /* Lobster Server Channel IDs */
-
     public static void main(String[] args) throws LoginException {
 
         JDABuilder builder = new JDABuilder(AccountType.BOT);
 
         builder.setToken(Secrets.BOT_TOKEN);
+        builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
         builder.setAutoReconnect(true);
 
         /* Register Event Listeners */

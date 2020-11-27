@@ -5,6 +5,7 @@ import de.lukkyz.lobsterbot.utils.Utils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import java.awt.*;
 import java.util.concurrent.TimeUnit;
 
 public class ReminderCommand implements Command {
@@ -41,7 +42,7 @@ public class ReminderCommand implements Command {
             }
 
             String reason_f = reason;
-            event.getTextChannel().sendMessage(new EmbedBuilder().setDescription("Reminding you in **" + time + "** " + (time > 1 || time == 0 ? "minutes" : "minute") + " about ``" + reason.substring(0, reason.length() - 1) + "``!").build()).queue();
+            event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.RED).setDescription("Reminding you in **" + time + "** " + (time > 1 || time == 0 ? "minutes" : "minute") + " about ``" + reason.substring(0, reason.length() - 1) + "``!" + Utils.generateEmote()).build()).queue();
             event.getAuthor().openPrivateChannel().queueAfter(time, TimeUnit.MINUTES, (channel -> channel.sendMessage("Hey! I'm here to remind you of ``" + reason_f.substring(0, reason_f.length() - 1).toUpperCase() + "``! " + Utils.generateEmote() + Utils.generateEmote()).queue()));
 
         }
