@@ -1,6 +1,8 @@
 package de.lukkyz.lobsterbot.utils;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public class LobsterDatabase {
@@ -8,7 +10,6 @@ public class LobsterDatabase {
     private static final String DATABASE_URL = "jdbc:mysql://localhost:3306/lobsterbot";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "";
-    String end = "";
     private Connection connection;
     private Properties properties;
 
@@ -49,20 +50,34 @@ public class LobsterDatabase {
 
     public String getBdays() {
 
+        String end = "";
+
         try {
 
+            connect();
             Statement statement = connection.createStatement();
-            ResultSet results = statement.executeQuery("select * from persons");
+            ResultSet results = statement.executeQuery("SELECT * FROM `persons` ORDER BY `persons`.`month` ASC, `persons`.`day` ASC");
 
             while (results.next()) {
 
                 String id = results.getString("discord_id");
                 int day = results.getInt("day");
                 int month = results.getInt("month");
+                final String[] month_name = {"Janurary", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
                 String name = results.getString("name");
+                String ending = "";
 
+                if (day == 1) {
+                    ending = "st";
+                } else if (day == 2) {
+                    ending = "nd";
+                } else if (day == 3) {
+                    ending = "rd";
+                } else if (day > 3) {
+                    ending = "th";
+                }
 
-                end += id + "," + day + "," + month + "," + name + "#";
+                end += "**" + name.toUpperCase() + "** -- " + day + ending + " " + month_name[month - 1] + "\n";
 
             }
 
@@ -70,32 +85,69 @@ public class LobsterDatabase {
             statement.close();
             disconnect();
 
-            return end.substring(0, end.length() - 1).substring(4);
+            return end.substring(0, end.length() - 1);
 
         } catch (SQLException e) {
+            e.printStackTrace();
             return null;
         } finally {
-
             end = "";
         }
     }
 
-    public ResultSet getBdaysExperimental() {
+    public void insertBday(long id, int day, int month, String name) {
 
         try {
 
             connect();
             Statement statement = connection.createStatement();
-            return statement.executeQuery("select * from persons");
-
-        } catch (SQLException sqlE) {
-            sqlE.printStackTrace();
-        } finally {
-            //TODO statement.close();
+            statement.executeUpdate("insert into persons values (" + id + ", " + month + ", " + day + ", \"" + name + "\")");
+            statement.close();
             disconnect();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-        return null;
+    }
+
+    public void deleteBday(String name) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("delete from persons where name = \"" + name + "\"");
+            statement.close();
+            disconnect();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
     }
+
+    public boolean blacklistedUser(long id) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            ResultSet results = statement.executeQuery("select * from blacklisted_users");
+            List<Long> banned = new ArrayList<>();
+
+            while (results.next()) {
+                banned.add(results.getLong("id"));
+            }
+
+            return banned.contains(id);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+
+    }
+
 }

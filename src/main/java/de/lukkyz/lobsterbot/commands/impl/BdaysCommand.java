@@ -1,86 +1,42 @@
 package de.lukkyz.lobsterbot.commands.impl;
 
-import de.lukkyz.lobsterbot.Lobsterbot;
 import de.lukkyz.lobsterbot.commands.Command;
+import de.lukkyz.lobsterbot.utils.LobsterDatabase;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.awt.*;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class BdaysCommand implements Command {
+
+    private LobsterDatabase database = new LobsterDatabase();
 
     @Override
     public void action(String[] args, MessageReceivedEvent event) {
 
-        try {
+        if (args.length == 0) {
 
-            if (args.length < 1) {
+            event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("**Lobster Gang Birthdays**").setColor(Color.RED).setDescription(database.getBdays()).build()).queue();
 
-                ResultSet results = Lobsterbot.data.getBdaysExperimental();
-                String id = results.getString("discord_id");
-                int day = results.getInt("day");
-                int month = results.getInt("month");
-                String name = results.getString("name");
+        } else if (args.length <= 4 && args.length > 0) {
 
-                String str_month = "";
+            if (args[0].equalsIgnoreCase("add")) {
 
-                switch (month) {
-                    case 1:
-                        str_month = "Janurary";
-                        break;
-                    case 2:
-                        str_month = "Februrary";
-                        break;
-                    case 3:
-                        str_month = "March";
-                        break;
-                    case 4:
-                        str_month = "April";
-                        break;
-                    case 5:
-                        str_month = "May";
-                        break;
-                    case 6:
-                        str_month = "June";
-                        break;
-                    case 7:
-                        str_month = "July";
-                        break;
-                    case 8:
-                        str_month = "August";
-                        break;
-                    case 9:
-                        str_month = "September";
-                        break;
-                    case 10:
-                        str_month = "October";
-                        break;
-                    case 11:
-                        str_month = "November";
-                        break;
-                    case 12:
-                        str_month = "December";
-                        break;
-                }
+                event.getTextChannel().sendMessage("Added user to birthday database.").queue();
+                database.insertBday(0, Integer.parseInt(args[3]), Integer.parseInt(args[2]), args[1]);
 
+            } else if (args[0].equalsIgnoreCase("remove")) {
 
-                event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("**Lobster Gang Birthdays**").setColor(Color.RED).setDescription(str_month).build()).queue();
-
-
-            } else {
-
-                if (args[1] == "add") {
-
-
-                }
+                event.getTextChannel().sendMessage("Removed user from birthday database.").queue();
+                database.deleteBday(args[1]);
 
             }
 
-        } catch (SQLException sqlexception) {
-            sqlexception.printStackTrace();
-        }
+        } else if (args.length < 4) {
+
+            event.getTextChannel().sendMessage("Insufficient arguments. Usage: !bdays [add/remove] [name] (day month)").queue();
+
+            }
 
     }
 

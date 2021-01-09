@@ -18,13 +18,14 @@ public class Lobsterbot {
     public static final boolean DEBUG = true;
 
     public static LobsterDatabase data = new LobsterDatabase();
+    public static JDABuilder builder;
 
     /* Bot Variables*/
     public static final String PREFIX = "!";
 
     public static void main(String[] args) throws LoginException {
 
-        JDABuilder builder = new JDABuilder(AccountType.BOT);
+        builder = new JDABuilder(AccountType.BOT);
 
         builder.setToken(Secrets.BOT_TOKEN);
         builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
@@ -39,7 +40,6 @@ public class Lobsterbot {
         CommandHandler.commands.put("remind", new ReminderCommand());
 
         builder.build();
-
         data.connect();
 
     }

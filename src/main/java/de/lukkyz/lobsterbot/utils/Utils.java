@@ -1,5 +1,8 @@
 package de.lukkyz.lobsterbot.utils;
 
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -24,4 +27,18 @@ public class Utils {
         return emotes.get(new Random().nextInt(emotes.size()));
 
     }
+
+    public static boolean isMod(Member member) {
+        List<Role> roles = member.getGuild().getRoles();
+
+        for (int i = 0; i < roles.size(); i++) {
+
+            //if (roles.contains(member.getRoles().)) {
+
+        }
+
+    }
+
+}
+
 }
