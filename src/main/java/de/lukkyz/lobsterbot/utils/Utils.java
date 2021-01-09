@@ -1,8 +1,5 @@
 package de.lukkyz.lobsterbot.utils;
 
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -28,17 +25,16 @@ public class Utils {
 
     }
 
-    public static boolean isMod(Member member) {
-        List<Role> roles = member.getGuild().getRoles();
+    public static String generateHelpString(String usage) {
 
-        for (int i = 0; i < roles.size(); i++) {
+        List<String> help = new ArrayList<>();
+        help.add("No worries, I'm here to help you. You need to use ");
+        help.add("Insufficient arguments. Usage: ");
+        help.add("Insufficient arguments. Please use: ");
+        help.add("Sorry. I need more information. ");
 
-            //if (roles.contains(member.getRoles().)) {
-
-        }
+        return help.get(new Random().nextInt(help.size())) + usage;
 
     }
-
-}
 
 }
