@@ -4,9 +4,11 @@ import de.lukkyz.lobsterbot.commands.CommandHandler;
 import de.lukkyz.lobsterbot.commands.impl.BdaysCommand;
 import de.lukkyz.lobsterbot.commands.impl.InfoCommand;
 import de.lukkyz.lobsterbot.commands.impl.ReminderCommand;
+import de.lukkyz.lobsterbot.listeners.GuildJoin;
 import de.lukkyz.lobsterbot.listeners.MessageListener;
 import de.lukkyz.lobsterbot.listeners.ReadyListener;
 import de.lukkyz.lobsterbot.utils.LobsterDatabase;
+import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
@@ -25,7 +27,7 @@ public class Lobsterbot {
 
     public static void main(String[] args) throws LoginException {
 
-        builder = new JDABuilder();
+        builder = new JDABuilder(AccountType.BOT);
 
         builder.setToken(data.getBotToken());
         builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
@@ -34,6 +36,7 @@ public class Lobsterbot {
 
         /* Register Event Listeners */
         builder.addEventListeners(new MessageListener());
+        builder.addEventListeners(new GuildJoin());
         if (!DEBUG) builder.addEventListeners(new ReadyListener());
 
         CommandHandler.commands.put("bdays", new BdaysCommand());
