@@ -140,4 +140,26 @@ public class LobsterDatabase {
 
     }
 
+    public String getBotToken() {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            ResultSet results = statement.executeQuery("select * from bot_token");
+
+            while (results.next()) {
+
+                return results.getString("token");
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return "";
+
+    }
+
 }

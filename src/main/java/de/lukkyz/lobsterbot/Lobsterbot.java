@@ -7,7 +7,6 @@ import de.lukkyz.lobsterbot.commands.impl.ReminderCommand;
 import de.lukkyz.lobsterbot.listeners.MessageListener;
 import de.lukkyz.lobsterbot.listeners.ReadyListener;
 import de.lukkyz.lobsterbot.utils.LobsterDatabase;
-import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
@@ -26,9 +25,9 @@ public class Lobsterbot {
 
     public static void main(String[] args) throws LoginException {
 
-        builder = new JDABuilder(AccountType.BOT);
+        builder = new JDABuilder();
 
-        builder.setToken(Secrets.BOT_TOKEN);
+        builder.setToken(data.getBotToken());
         builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
         builder.setAutoReconnect(true);
         builder.setActivity(Activity.playing(DEBUG ? "in debug mode." : "Lobster Gang"));
