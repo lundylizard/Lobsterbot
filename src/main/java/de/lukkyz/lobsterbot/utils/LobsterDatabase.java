@@ -65,19 +65,8 @@ public class LobsterDatabase {
                 int month = results.getInt("month");
                 final String[] month_name = {"Janurary", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
                 String name = results.getString("name");
-                String ending = "";
 
-                if (day == 1) {
-                    ending = "st";
-                } else if (day == 2) {
-                    ending = "nd";
-                } else if (day == 3) {
-                    ending = "rd";
-                } else if (day > 3) {
-                    ending = "th";
-                }
-
-                end += "**" + name.toUpperCase() + "** -- " + day + ending + " " + month_name[month - 1] + "\n";
+                end += "**" + name.toUpperCase() + "** -- " + day + ". " + month_name[month - 1] + "\n";
 
             }
 
@@ -90,8 +79,6 @@ public class LobsterDatabase {
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
-        } finally {
-            end = "";
         }
     }
 
@@ -129,12 +116,13 @@ public class LobsterDatabase {
 
     public boolean blacklistedUser(long id) {
 
+        List<Long> banned = new ArrayList<>();
+
         try {
 
             connect();
             Statement statement = connection.createStatement();
             ResultSet results = statement.executeQuery("select * from blacklisted_users");
-            List<Long> banned = new ArrayList<>();
 
             while (results.next()) {
                 banned.add(results.getLong("id"));
@@ -144,6 +132,8 @@ public class LobsterDatabase {
 
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            banned.clear();
         }
 
         return false;
