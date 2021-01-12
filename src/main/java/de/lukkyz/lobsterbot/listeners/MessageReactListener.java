@@ -15,15 +15,18 @@ public class MessageReactListener extends ListenerAdapter {
 
         if ((emote.getName().hashCode() == 11088) && !(starred == event.getUser().getIdLong())) {
             if (!Lobsterbot.data.isInStarsLeaderboard(Long.toString(starred))) {
+
                 Lobsterbot.data.createStarDatabase(Long.toString(starred));
                 System.out.println("> Created database entry for " + starred + " in ´stars´.");
                 Lobsterbot.data.addStarsToUser(Long.toString(starred), 1);
                 System.out.println("> " + event.getUser().getName() + " awarded star to " + starred);
+
             } else {
-                Lobsterbot.data.addStarsToUser(Long.toString(starred), Lobsterbot.data.getStarsFromUser((Long.toString(starred) + 1)));
+
+                Lobsterbot.data.addStarsToUser(Long.toString(starred), Lobsterbot.data.getStarsFromUser(Long.toString(starred)) + 1);
                 System.out.println("> " + event.getUser().getName() + " awarded star to " + starred);
+
             }
         }
-
     }
 }

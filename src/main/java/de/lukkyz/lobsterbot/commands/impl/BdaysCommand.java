@@ -25,7 +25,6 @@ public class BdaysCommand implements Command {
 
         } else if (args.length <= 4 && args.length > 0) {
 
-
             if (event.getGuild().getMember(event.getAuthor()).getRoles().contains(lobsterroledebug) || event.getGuild().getMember(event.getAuthor()).getRoles().contains(lobsterrole)) {
 
                 try {

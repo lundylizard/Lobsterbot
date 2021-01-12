@@ -19,7 +19,7 @@ import javax.security.auth.login.LoginException;
 
 public class Lobsterbot {
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     public static LobsterDatabase data = new LobsterDatabase();
     public static JDABuilder builder;
@@ -34,7 +34,7 @@ public class Lobsterbot {
         builder.setToken(data.getBotToken());
         builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
         builder.setAutoReconnect(true);
-        builder.setActivity(DEBUG ? Activity.playing("in debug mode.") : Activity.listening("to commands."));
+        builder.setActivity(DEBUG ? Activity.playing("in debug mode.") : Activity.listening("commands."));
 
         /* Register Event Listeners */
         builder.addEventListeners(new MessageListener());

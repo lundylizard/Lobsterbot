@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
@@ -201,19 +202,19 @@ public class LobsterDatabase {
             connect();
             Statement statement = connection.createStatement();
             ResultSet results = statement.executeQuery("select * from stars");
+            HashMap<String, Integer> stars = new HashMap<>();
+            String userid = "";
 
             while (results.next()) {
 
-                String userid = results.getString("id");
+                userid = results.getString("id");
                 int amount = results.getInt("amount");
 
-                if (id == userid) {
-                    return amount;
-                } else {
-                    return -1;
-                }
+                stars.put(userid, amount);
 
             }
+
+            return stars.get(userid);
 
         } catch (SQLException e) {
             e.printStackTrace();
