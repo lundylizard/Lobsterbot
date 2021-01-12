@@ -3,9 +3,11 @@ package de.lukkyz.lobsterbot;
 import de.lukkyz.lobsterbot.commands.CommandHandler;
 import de.lukkyz.lobsterbot.commands.impl.BdaysCommand;
 import de.lukkyz.lobsterbot.commands.impl.InfoCommand;
+import de.lukkyz.lobsterbot.commands.impl.LeaderboardCommand;
 import de.lukkyz.lobsterbot.commands.impl.ReminderCommand;
-import de.lukkyz.lobsterbot.listeners.GuildJoin;
+import de.lukkyz.lobsterbot.listeners.GuildJoinListener;
 import de.lukkyz.lobsterbot.listeners.MessageListener;
+import de.lukkyz.lobsterbot.listeners.MessageReactListener;
 import de.lukkyz.lobsterbot.listeners.ReadyListener;
 import de.lukkyz.lobsterbot.utils.LobsterDatabase;
 import net.dv8tion.jda.api.AccountType;
@@ -32,19 +34,22 @@ public class Lobsterbot {
         builder.setToken(data.getBotToken());
         builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
         builder.setAutoReconnect(true);
-        builder.setActivity(Activity.playing(DEBUG ? "in debug mode." : "Lobster Gang"));
+        builder.setActivity(DEBUG ? Activity.playing("in debug mode.") : Activity.listening("to commands."));
 
         /* Register Event Listeners */
         builder.addEventListeners(new MessageListener());
-        builder.addEventListeners(new GuildJoin());
+        builder.addEventListeners(new GuildJoinListener());
+        builder.addEventListeners(new MessageReactListener());
         if (!DEBUG) builder.addEventListeners(new ReadyListener());
 
         CommandHandler.commands.put("bdays", new BdaysCommand());
         CommandHandler.commands.put("info", new InfoCommand());
         CommandHandler.commands.put("remind", new ReminderCommand());
+        CommandHandler.commands.put("leaderboard", new LeaderboardCommand());
 
         builder.build();
         data.connect();
+
 
     }
 

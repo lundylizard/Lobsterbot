@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
 
-public class GuildJoin extends ListenerAdapter {
+public class GuildJoinListener extends ListenerAdapter {
 
     private String joinmessage = "";
 

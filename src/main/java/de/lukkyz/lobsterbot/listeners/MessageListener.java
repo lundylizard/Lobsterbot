@@ -17,7 +17,7 @@ public class MessageListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
 
-        if ((new Random().nextInt(100) < 5) && (event.getMessage().getContentRaw().contains("lobster") || event.getMessage().getContentRaw().contains("lobsters"))) {
+        if ((new Random().nextInt(100) < 5) && (event.getMessage().getContentRaw().toLowerCase().contains("lobster") || event.getMessage().getContentRaw().toLowerCase().contains("lobsters"))) {
             event.getTextChannel().sendMessage("I love lobsters.").queue();
             System.out.println("> Triggered \"I love Lobsters.\" easter egg in " + event.getMessage().getGuild().getName() + " (" + event.getMessage().getId() + ")");
         }

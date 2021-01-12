@@ -11,16 +11,6 @@ import java.util.concurrent.TimeUnit;
 public class ReminderCommand implements Command {
 
     @Override
-    public void executed(boolean success, MessageReceivedEvent event) {
-
-    }
-
-    @Override
-    public boolean called(String[] args, MessageReceivedEvent event) {
-        return false;
-    }
-
-    @Override
     public void action(String[] args, MessageReceivedEvent event) {
 
         int time = 0;
@@ -33,7 +23,7 @@ public class ReminderCommand implements Command {
             try {
                 time = Integer.parseInt(args[0]);
             } catch (NumberFormatException e) {
-                event.getTextChannel().sendMessage("`" + args[0] + "` is not a number... How am I supposed to remind you in `" + args[0] + "` minutes?! ").queue();
+                event.getTextChannel().sendMessage("`" + args[0] + "` is not a number... How am I supposed to remind you in `" + args[0] + "` minutes?!").queue();
                 return;
             }
 
@@ -48,4 +38,15 @@ public class ReminderCommand implements Command {
         }
 
     }
+
+    @Override
+    public void executed(boolean success, MessageReceivedEvent event) {
+
+    }
+
+    @Override
+    public boolean called(String[] args, MessageReceivedEvent event) {
+        return false;
+    }
+
 }

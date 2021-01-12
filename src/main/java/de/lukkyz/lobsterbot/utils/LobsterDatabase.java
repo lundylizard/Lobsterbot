@@ -1,5 +1,7 @@
 package de.lukkyz.lobsterbot.utils;
 
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -159,6 +161,126 @@ public class LobsterDatabase {
         }
 
         return "";
+
+    }
+
+    public void addStarsToUser(String id, int amount) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("update stars set amount = " + amount + " where id = \"" + id + "\"");
+            statement.close();
+            disconnect();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void removeStarsFromUser(String id) {
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("update stars set amount = 0 where id = \"" + id + "\"");
+            statement.close();
+            disconnect();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public int getStarsFromUser(String id) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            ResultSet results = statement.executeQuery("select * from stars");
+
+            while (results.next()) {
+
+                String userid = results.getString("id");
+                int amount = results.getInt("amount");
+
+                if (id == userid) {
+                    return amount;
+                } else {
+                    return -1;
+                }
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
+
+    public void createStarDatabase(String id) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("insert into stars values (\"" + id + "\", 0)");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public List<String> getLeaderboard(MessageReceivedEvent event) {
+
+        List<String> leaderboard = new ArrayList<>();
+        int rank = 0;
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            ResultSet results = statement.executeQuery("select * from stars order by `stars`.`amount` DESC");
+
+            while (results.next()) {
+
+                rank++;
+                leaderboard.add(rank + ") **" + event.getJDA().getUserById(results.getString("id")).getName().toUpperCase() + "** -- " + results.getInt("amount") + " :star:");
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return leaderboard;
+    }
+
+    public boolean isInStarsLeaderboard(String id) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            ResultSet results = statement.executeQuery("select id from stars");
+            List<String> ids = new ArrayList<>();
+
+            while (results.next()) {
+                ids.add(results.getString("id"));
+            }
+
+            return ids.contains(id);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
 
     }
 
