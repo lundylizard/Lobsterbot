@@ -15,7 +15,7 @@ public class LeaderboardCommand implements Command {
 
         if (args.length == 0) {
 
-            List<String> leaderboard = Lobsterbot.data.getLeaderboard(event);
+            List<String> leaderboard = Lobsterbot.database.getLeaderboard(event);
             String output = "";
 
             for (int i = 0; i < leaderboard.size(); i++) {

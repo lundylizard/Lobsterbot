@@ -14,10 +14,14 @@ public class CommandHandler {
             boolean safe = commands.get(cmd.invoke).called(cmd.args, cmd.event);
 
             if (!safe) {
+
                 commands.get(cmd.invoke).executed(safe, cmd.event);
                 commands.get(cmd.invoke).action(cmd.args, cmd.event);
+
             } else {
+
                 commands.get(cmd.invoke).executed(safe, cmd.event);
+
             }
 
         }

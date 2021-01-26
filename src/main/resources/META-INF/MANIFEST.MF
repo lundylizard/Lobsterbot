@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: de.lukkyz.lobsterbot.Lobsterbot
+Main-Class: de.lukkyz.lobsterbot.Lobsterbot
+

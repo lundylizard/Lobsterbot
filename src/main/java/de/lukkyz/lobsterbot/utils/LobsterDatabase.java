@@ -1,5 +1,6 @@
 package de.lukkyz.lobsterbot.utils;
 
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.sql.*;
@@ -17,11 +18,14 @@ public class LobsterDatabase {
     private Properties properties;
 
     public Properties getProperties() {
+
         if (properties == null) {
+
             properties = new Properties();
             properties.setProperty("user", USERNAME);
             properties.setProperty("password", PASSWORD);
             properties.setProperty("MaxPooledStatements", "250");
+
         }
 
         return properties;
@@ -29,29 +33,46 @@ public class LobsterDatabase {
     }
 
     public Connection connect() {
+
         if (connection == null) {
+
             try {
+
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 connection = DriverManager.getConnection(DATABASE_URL, getProperties());
+
             } catch (ClassNotFoundException | SQLException e) {
+
                 e.printStackTrace();
+
             }
+
         }
+
         return connection;
+
     }
 
     public void disconnect() {
+
         if (connection != null) {
+
             try {
+
                 connection.close();
                 connection = null;
+
             } catch (SQLException e) {
+
                 e.printStackTrace();
+
             }
+
         }
+
     }
 
-    public String getBdays() {
+    public String getBdays(MessageReceivedEvent event) {
 
         String end = "";
 
@@ -67,9 +88,8 @@ public class LobsterDatabase {
                 int day = results.getInt("day");
                 int month = results.getInt("month");
                 final String[] month_name = {"Janurary", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-                String name = results.getString("name");
 
-                end += "**" + name.toUpperCase() + "** -- " + day + ". " + month_name[month - 1] + "\n";
+                end += event.getGuild().getMemberById(id).getAsMention() + " -- " + day + ". " + month_name[month - 1] + "\n";
 
             }
 
@@ -80,12 +100,15 @@ public class LobsterDatabase {
             return end.substring(0, end.length() - 1);
 
         } catch (SQLException e) {
+
             e.printStackTrace();
             return null;
+
         }
+
     }
 
-    public void insertBday(long id, int day, int month, String name) {
+    public void insertBday(String id, int day, int month, String name) {
 
         try {
 
@@ -96,24 +119,55 @@ public class LobsterDatabase {
             disconnect();
 
         } catch (SQLException e) {
+
             e.printStackTrace();
+
         }
 
     }
 
-    public void deleteBday(String name) {
+    public void deleteBday(String id) {
 
         try {
 
             connect();
             Statement statement = connection.createStatement();
-            statement.executeUpdate("delete from persons where name = \"" + name + "\"");
+            statement.executeUpdate("delete from persons where discord_id = \"" + id + "\"");
             statement.close();
             disconnect();
 
         } catch (SQLException e) {
+
             e.printStackTrace();
+
         }
+
+    }
+
+    public boolean isInBdaysDatabase(String id) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            ResultSet results = statement.executeQuery("select discord_id from persons");
+            List<String> ids = new ArrayList<>();
+
+            while (results.next()) {
+
+                ids.add(results.getString("discord_id"));
+
+            }
+
+            return ids.contains(id);
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+
+        return false;
 
     }
 
@@ -128,15 +182,21 @@ public class LobsterDatabase {
             ResultSet results = statement.executeQuery("select * from blacklisted_users");
 
             while (results.next()) {
+
                 banned.add(results.getLong("id"));
+
             }
 
             return banned.contains(id);
 
         } catch (SQLException e) {
+
             e.printStackTrace();
+
         } finally {
+
             banned.clear();
+
         }
 
         return false;
@@ -158,7 +218,9 @@ public class LobsterDatabase {
             }
 
         } catch (SQLException e) {
+
             e.printStackTrace();
+
         }
 
         return "";
@@ -182,6 +244,7 @@ public class LobsterDatabase {
     }
 
     public void removeStarsFromUser(String id) {
+
         try {
 
             connect();
@@ -191,8 +254,11 @@ public class LobsterDatabase {
             disconnect();
 
         } catch (SQLException e) {
+
             e.printStackTrace();
+
         }
+
     }
 
     public int getStarsFromUser(String id) {
@@ -209,7 +275,6 @@ public class LobsterDatabase {
 
                 userid = results.getString("id");
                 int amount = results.getInt("amount");
-
                 stars.put(userid, amount);
 
             }
@@ -217,10 +282,13 @@ public class LobsterDatabase {
             return stars.get(userid);
 
         } catch (SQLException e) {
+
             e.printStackTrace();
+
         }
 
         return -1;
+
     }
 
     public void createStarDatabase(String id) {
@@ -232,7 +300,9 @@ public class LobsterDatabase {
             statement.executeUpdate("insert into stars values (\"" + id + "\", 0)");
 
         } catch (SQLException e) {
+
             e.printStackTrace();
+
         }
 
     }
@@ -256,10 +326,13 @@ public class LobsterDatabase {
             }
 
         } catch (SQLException e) {
+
             e.printStackTrace();
+
         }
 
         return leaderboard;
+
     }
 
     public boolean isInStarsLeaderboard(String id) {
@@ -272,16 +345,55 @@ public class LobsterDatabase {
             List<String> ids = new ArrayList<>();
 
             while (results.next()) {
+
                 ids.add(results.getString("id"));
+
             }
 
             return ids.contains(id);
 
         } catch (SQLException e) {
+
             e.printStackTrace();
+
         }
 
         return false;
+
+    }
+
+    public int getEXPfromUser(Member member) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            statement.executeQuery("");
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+            return -1;
+
+        }
+
+        return 0;
+
+    }
+
+    public void addEXPToUser(Member member, int amount) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("");
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
 
     }
 

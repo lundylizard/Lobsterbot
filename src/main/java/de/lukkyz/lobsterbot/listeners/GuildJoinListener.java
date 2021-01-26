@@ -22,4 +22,5 @@ public class GuildJoinListener extends ListenerAdapter {
         event.getUser().openPrivateChannel().queue(channel -> channel.sendMessage(joinmessage).queue());
 
     }
+
 }

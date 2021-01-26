@@ -2,8 +2,6 @@ package de.lukkyz.lobsterbot.commands.impl;
 
 import de.lukkyz.lobsterbot.commands.Command;
 import de.lukkyz.lobsterbot.commands.CommandHandler;
-import de.lukkyz.lobsterbot.commands.CommandParser;
-import de.lukkyz.lobsterbot.listeners.MessageListener;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
@@ -29,9 +27,7 @@ public class InfoCommand implements Command {
 
             content += "**Server Owner:** " + event.getGuild().getOwner().getAsMention() + "\n";
             content += "Members: " + event.getGuild().getMembers().size() + " | Emotes: " + event.getGuild().getEmotes().size() + "\n\n";
-
             content += "Commands (" + CommandHandler.commands.size() + "): \n> " + CommandHandler.commands.keySet().toString().replace("[", "").replace("]", "") + "\n\n";
-            content += "[Session] __Commands executed:__ **" + (CommandParser.count - 1) + "** | __Messages sent:__ **" + MessageListener.count + "**";
 
             event.getMessage().getTextChannel().sendMessage(new EmbedBuilder().setDescription(content).setTitle("__Server and Bot Info__:").setFooter(event.getMessage().getId() + "-" + event.getTextChannel().getName(), event.getAuthor().getAvatarUrl()).setThumbnail(event.getJDA().getSelfUser().getAvatarUrl()).setColor(Color.RED).build()).queue();
 
@@ -39,7 +35,6 @@ public class InfoCommand implements Command {
         } else if (args.length >= 1) {
 
             Member mentioned = event.getMessage().getGuild().getMember(event.getMessage().getMentionedUsers().get(0));
-
             String content = "";
 
             content += "**User ID:** " + mentioned.getId() + "\n";
@@ -48,6 +43,7 @@ public class InfoCommand implements Command {
             content += "Account created on **" + mentioned.getTimeCreated().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).replace("T", " ").substring(0, mentioned.getTimeCreated().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).length() - 4) + "**\n";
             content += "Server Joined on **" + mentioned.getTimeJoined().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).replace("T", " ").substring(0, mentioned.getTimeJoined().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).length() - 4) + "**\n";
             content += "**Roles:**\n> ";
+
             for (int i = 0; i < mentioned.getRoles().size(); i++) {
                 Role role = mentioned.getRoles().get(i);
                 content += role.getAsMention() + " ";
@@ -61,6 +57,7 @@ public class InfoCommand implements Command {
 
     @Override
     public void executed(boolean success, MessageReceivedEvent event) {
+
     }
 
     @Override

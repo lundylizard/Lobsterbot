@@ -17,7 +17,9 @@ public class ReminderCommand implements Command {
         String reason = "";
 
         if (args.length < 2) {
+
             event.getTextChannel().sendMessage(Utils.generateHelpString("`!remind <time in mins> <reason>`")).queue();
+
         } else if (args.length >= 2) {
 
             try {
