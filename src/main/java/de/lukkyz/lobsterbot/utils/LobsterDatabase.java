@@ -1,5 +1,6 @@
 package de.lukkyz.lobsterbot.utils;
 
+import de.lukkyz.lobsterbot.Lobsterbot;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
@@ -362,22 +363,76 @@ public class LobsterDatabase {
 
     }
 
+    //todo exp
+
+    public void createEXPDBEntry(Member member) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("insert into exp values (" + member.getIdLong() + ", 0, 1)");
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+
+    }
+
+    public boolean isInEXPDB(Member member) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            ResultSet results = statement.executeQuery("select id from exp");
+            List<Long> ids = new ArrayList<>();
+
+            while (results.next()) {
+
+                ids.add(results.getLong("id"));
+
+            }
+
+            return ids.contains(member.getIdLong());
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+
+        return false;
+
+    }
+
     public int getEXPfromUser(Member member) {
 
         try {
 
             connect();
             Statement statement = connection.createStatement();
-            statement.executeQuery("");
+            ResultSet results = statement.executeQuery("select * from exp where id = " + member.getIdLong());
+            HashMap<Long, Integer> exp = new HashMap<>();
+
+            while (results.next()) {
+
+                int amount = results.getInt("amount");
+                exp.put(member.getIdLong(), amount);
+
+            }
+
+            return exp.get(member.getIdLong());
 
         } catch (SQLException e) {
 
             e.printStackTrace();
-            return -1;
 
         }
 
-        return 0;
+        return -1;
 
     }
 
@@ -387,13 +442,101 @@ public class LobsterDatabase {
 
             connect();
             Statement statement = connection.createStatement();
-            statement.executeUpdate("");
+            statement.executeUpdate("update exp set amount = " + amount + " where id = " + member.getIdLong());
 
         } catch (SQLException e) {
 
             e.printStackTrace();
 
         }
+
+    }
+
+    public int getLevelFromUser(Member member) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            ResultSet results = statement.executeQuery("select * from exp where id = " + member.getIdLong());
+            HashMap<Long, Integer> exp = new HashMap<>();
+
+            while (results.next()) {
+
+                int amount = results.getInt("level");
+                exp.put(member.getIdLong(), amount);
+
+            }
+
+            return exp.get(member.getIdLong());
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+
+        return -1;
+
+    }
+
+    public void setLevelFromUser(Member member, int level) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("update exp set level = " + level + " where id = " + member.getIdLong());
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+
+    }
+
+    public List<String> getEXPLeaderboard(MessageReceivedEvent event) {
+
+        List<String> leaderboard = new ArrayList<>();
+        int rank = 0;
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            ResultSet results = statement.executeQuery("select * from exp order by `exp`.`level` DESC, `exp`.`amount` DESC");
+
+            while (results.next()) {
+
+                rank++;
+                leaderboard.add(rank + ") **" + event.getJDA().getUserById(results.getLong("id")).getAsMention() + "** -- [:lobster: Level " + results.getInt("level") + "] Overall EXP: " + calculateOverallEXP(Lobsterbot.database.getLevelFromUser(event.getGuild().getMemberById(results.getLong("id"))), Lobsterbot.database.getEXPfromUser(event.getGuild().getMemberById(results.getLong("id")))));
+
+            }
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+
+        return leaderboard;
+
+    }
+
+    public int calculateOverallEXP(int level, int amount) {
+
+        int exp = 0;
+
+        for (int i = 0; i < level; i++) {
+
+            exp += Lobsterbot.experienceManager.calculateEXPneeded(i);
+            exp += amount;
+            exp -= 100;
+
+        }
+
+        return exp;
 
     }
 

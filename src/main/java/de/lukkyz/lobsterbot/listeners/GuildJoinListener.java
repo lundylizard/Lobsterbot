@@ -17,7 +17,7 @@ public class GuildJoinListener extends ListenerAdapter {
         joinmessage += "A moderator of ours has to approve you. This might take a while depending on if someone is available right now.\n";
         joinmessage += "Meanwhile you can look at the beautiful colors you can choose (You can change it whenever).\n";
         joinmessage += "Make sure to read the rules and enjoy your stay!\n\n";
-        joinmessage += "- The Lobster Gang";
+        joinmessage += "- The Lobster Gang :lobster:";
 
         event.getUser().openPrivateChannel().queue(channel -> channel.sendMessage(joinmessage).queue());
 

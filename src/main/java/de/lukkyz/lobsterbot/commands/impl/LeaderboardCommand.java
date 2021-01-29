@@ -15,7 +15,7 @@ public class LeaderboardCommand implements Command {
 
         if (args.length == 0) {
 
-            List<String> leaderboard = Lobsterbot.database.getLeaderboard(event);
+            List<String> leaderboard = Lobsterbot.database.getEXPLeaderboard(event);
             String output = "";
 
             for (int i = 0; i < leaderboard.size(); i++) {
@@ -24,7 +24,7 @@ public class LeaderboardCommand implements Command {
 
             }
 
-            event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("**Lobster Gang Leaderboard**").setColor(Color.RED).setDescription(output).build()).queue();
+            event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("**Lobster Gang EXP Leaderboard**").setColor(Color.RED).setDescription(output).build()).queue();
 
         }
 
