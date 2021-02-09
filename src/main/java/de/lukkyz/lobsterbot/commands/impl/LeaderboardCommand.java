@@ -15,7 +15,7 @@ public class LeaderboardCommand implements Command {
 
         if (args.length == 0) {
 
-            List<String> leaderboard = Lobsterbot.database.getEXPLeaderboard(event);
+            List<String> leaderboard = Lobsterbot.experienceManager.getEXPLeaderboard(event);
             String output = "";
 
             for (int i = 0; i < leaderboard.size(); i++) {
@@ -30,13 +30,4 @@ public class LeaderboardCommand implements Command {
 
     }
 
-    @Override
-    public void executed(boolean success, MessageReceivedEvent event) {
-
-    }
-
-    @Override
-    public boolean called(String[] args, MessageReceivedEvent event) {
-        return false;
-    }
 }

@@ -4,10 +4,13 @@ import de.lukkyz.lobsterbot.commands.CommandHandler;
 import de.lukkyz.lobsterbot.commands.impl.*;
 import de.lukkyz.lobsterbot.listeners.GuildJoinListener;
 import de.lukkyz.lobsterbot.listeners.MessageListener;
-import de.lukkyz.lobsterbot.listeners.MessageReactListener;
+import de.lukkyz.lobsterbot.listeners.RoleAddedEvent;
 import de.lukkyz.lobsterbot.listeners.VoiceChatChangeListener;
-import de.lukkyz.lobsterbot.utils.ExperienceManager;
 import de.lukkyz.lobsterbot.utils.LobsterDatabase;
+import de.lukkyz.lobsterbot.utils.managers.BlacklistManager;
+import de.lukkyz.lobsterbot.utils.managers.BotManager;
+import de.lukkyz.lobsterbot.utils.managers.ExperienceManager;
+import de.lukkyz.lobsterbot.utils.managers.UserManager;
 import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -17,40 +20,54 @@ import javax.security.auth.login.LoginException;
 
 public class Lobsterbot {
 
-    public static final boolean DEBUG = true;
+    private static final boolean DEBUG = true;
 
     public static LobsterDatabase database;
-    public static JDABuilder builder;
+    public static UserManager userManager;
+
     public static ExperienceManager experienceManager;
+    public static BotManager botManager;
+    public static BlacklistManager blacklistManager;
+    private static JDABuilder builder;
 
     /* Bot Variables*/
     public static final String PREFIX = "!";
 
+    @Deprecated
     public static void main(String[] args) throws LoginException {
 
         builder = new JDABuilder(AccountType.BOT);
+
         database = new LobsterDatabase();
         experienceManager = new ExperienceManager();
+        userManager = new UserManager();
+        botManager = new BotManager();
+        blacklistManager = new BlacklistManager();
 
-        builder.setToken(database.getBotToken());
-        builder.setStatus(OnlineStatus.DO_NOT_DISTURB);
+        builder.setToken(botManager.getBotToken());
+        builder.setStatus(DEBUG ? OnlineStatus.IDLE : OnlineStatus.ONLINE);
         builder.setAutoReconnect(true);
         builder.setActivity(DEBUG ? Activity.playing("in debug mode.") : Activity.listening("commands."));
 
         /* Register Event Listeners */
         builder.addEventListeners(new MessageListener());
         builder.addEventListeners(new GuildJoinListener());
-        builder.addEventListeners(new MessageReactListener());
         builder.addEventListeners(new VoiceChatChangeListener());
+        builder.addEventListeners(new RoleAddedEvent());
 
-        CommandHandler.commands.put("bdays", new BdaysCommand());
         CommandHandler.commands.put("info", new InfoCommand());
+        CommandHandler.commands.put("bdays", new BdaysCommand());
         CommandHandler.commands.put("remind", new ReminderCommand());
         CommandHandler.commands.put("exp", new EXPCommand());
+        CommandHandler.commands.put("level", new EXPCommand());
         CommandHandler.commands.put("leaderboard", new LeaderboardCommand());
+        CommandHandler.commands.put("leaderboards", new LeaderboardCommand());
+        CommandHandler.commands.put("donate", new DonateCommand());
+        CommandHandler.commands.put("transfer", new TransferCommand());
+        CommandHandler.commands.put("blacklist", new BlacklistCommand());
 
         builder.build();
-        database.connect();
+        LobsterDatabase.connect();
 
     }
 

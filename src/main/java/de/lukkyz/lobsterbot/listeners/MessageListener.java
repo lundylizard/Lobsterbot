@@ -2,7 +2,6 @@ package de.lukkyz.lobsterbot.listeners;
 
 import de.lukkyz.lobsterbot.Lobsterbot;
 import de.lukkyz.lobsterbot.commands.CommandHandler;
-import de.lukkyz.lobsterbot.utils.LobsterDatabase;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -16,17 +15,16 @@ import java.util.stream.Collectors;
 
 public class MessageListener extends ListenerAdapter {
 
-    LobsterDatabase database = new LobsterDatabase();
-
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
 
         Message message = event.getMessage();
 
-        /* Remove bad words, todo add database stuff */
-        if (message.getContentRaw().toLowerCase().replace(" ", "").contains("nigger") || message.getContentRaw().toLowerCase().replace(" ", "").contains("nigga")) {
+        /* Command Listener */
+        if (message.getContentRaw().startsWith(Lobsterbot.PREFIX) && !message.getAuthor().getId().equals(event.getJDA().getSelfUser().getId())) {
 
-            message.delete().queue();
+            CommandHandler.handleCommand(CommandHandler.parser.parse(message.getContentRaw(), event));
+            System.out.println("> " + event.getAuthor().getName() + " executed command " + message.getContentRaw().toLowerCase());
 
         }
 
@@ -35,7 +33,10 @@ public class MessageListener extends ListenerAdapter {
             if (!Lobsterbot.database.isInEXPDB(event.getMember())) {
 
                 Lobsterbot.database.createEXPDBEntry(event.getMember());
-                Lobsterbot.experienceManager.addEXP(event.getMember(), 10);
+                System.out.println("> Created EXP database entry for " + event.getMember().getUser().getName());
+                Lobsterbot.experienceManager.addEXP(event.getMember(), 50);
+                Lobsterbot.experienceManager.addOverallEXP(event.getMember(), 50);
+                System.out.println("> " + event.getAuthor().getName() + " gained 50 EXP (EXP needed for next level: " + Lobsterbot.experienceManager.calculateEXPneeded(Lobsterbot.experienceManager.getLevel(event.getMember())) + ")");
 
             } else {
 
@@ -44,22 +45,35 @@ public class MessageListener extends ListenerAdapter {
 
                 if (!(spam > 2)) {
 
-                    Lobsterbot.experienceManager.addEXP(event.getMember(), 15);
+                    Lobsterbot.experienceManager.addEXP(event.getMember(), 50);
+                    Lobsterbot.experienceManager.addOverallEXP(event.getMember(), 50);
+                    System.out.println("> " + event.getAuthor().getName() + " gained 50 EXP (EXP needed for next level: " + (Lobsterbot.experienceManager.calculateEXPneeded(Lobsterbot.experienceManager.getLevel(event.getMember())) - Lobsterbot.experienceManager.getEXP(event.getMember())) + ")");
 
-                    if (new Random().nextInt(100) < 3) {
+                    if (new Random().nextInt(1000) <= 50) {
 
-                        event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setDescription(event.getAuthor().getAsMention() + " has gained an additional 10 EXP.").build()).queue();
-                        Lobsterbot.experienceManager.addEXP(event.getMember(), 10);
+                        int random = ((new Random().nextInt(50) * 10) + 10);
+                        event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setDescription(event.getAuthor().getAsMention() + " has gained an additional **" + random + "** EXP.").build()).queue();
+                        Lobsterbot.experienceManager.addEXP(event.getMember(), random);
+                        Lobsterbot.experienceManager.addOverallEXP(event.getMember(), random);
+                        System.out.println("> " + event.getAuthor().getName() + " gained " + random + " EXP (EXP needed for next level: " + (Lobsterbot.experienceManager.calculateEXPneeded(Lobsterbot.experienceManager.getLevel(event.getMember())) - Lobsterbot.experienceManager.getEXP(event.getMember())) + ")");
 
                     }
 
+                } else {
+
+                    Lobsterbot.experienceManager.addEXP(event.getMember(), 10);
+                    Lobsterbot.experienceManager.addOverallEXP(event.getMember(), 10);
+                    System.out.println("> " + event.getAuthor().getName() + " gained 10 EXP (EXP needed for next level: " + (Lobsterbot.experienceManager.calculateEXPneeded(Lobsterbot.experienceManager.getLevel(event.getMember())) - Lobsterbot.experienceManager.getEXP(event.getMember())) + ")");
+
                 }
 
-                if ((Lobsterbot.experienceManager.calculateEXPneeded(Lobsterbot.database.getLevelFromUser(event.getMember())) <= Lobsterbot.database.getEXPfromUser(event.getMember()))) {
+                if ((Lobsterbot.experienceManager.calculateEXPneeded(Lobsterbot.experienceManager.getLevel(event.getMember())) <= Lobsterbot.experienceManager.getEXP(event.getMember()))) {
 
-                    Lobsterbot.database.setLevelFromUser(event.getMember(), Lobsterbot.database.getLevelFromUser(event.getMember()) + 1);
-                    Lobsterbot.database.addEXPToUser(event.getMember(), 0);
-                    event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("Level Up! :sparkles:").setDescription(event.getAuthor().getAsMention() + " is now level " + Lobsterbot.database.getLevelFromUser(event.getMember()) + ".").build()).queue();
+                    Lobsterbot.experienceManager.addLevel(event.getMember(), 1);
+                    Lobsterbot.experienceManager.setEXP(event.getMember(), 0);
+                    event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("Level Up! :sparkles:").setDescription(event.getAuthor().getAsMention() + " is now level " + Lobsterbot.experienceManager.getLevel(event.getMember()) + "!").build()).queue();
+                    System.out.println("> " + event.getAuthor().getName() + " leveled up! (EXP needed for next level: " + Lobsterbot.experienceManager.calculateEXPneeded(Lobsterbot.experienceManager.getLevel(event.getMember())) + ")");
+
 
                 }
 
@@ -70,25 +84,9 @@ public class MessageListener extends ListenerAdapter {
         if ((new Random().nextInt(100) < 2) && (message.getContentRaw().toLowerCase().contains("lobster") || message.getContentRaw().toLowerCase().contains("lobsters"))) {
 
             event.getTextChannel().sendMessage("I love lobsters.").queue();
-            System.out.println("> Triggered \"I love Lobsters.\" easter egg in " + message.getGuild().getName() + " (" + message.getId() + ")");
+            System.out.println("> " + event.getAuthor().getName() + " triggered \"I love lobsters.\" easter egg in " + message.getGuild().getName() + " (" + event.getTextChannel().getName() + ")");
 
         }
-
-        /* Command Listener */
-        if (message.getContentRaw().startsWith(Lobsterbot.PREFIX) && message.getAuthor().getId() != event.getJDA().getSelfUser().getId()) {
-            if (database.blacklistedUser(event.getAuthor().getIdLong())) {
-
-                event.getAuthor().openPrivateChannel().queue(channel -> channel.sendMessage("Seems like you are blacklisted from using Lobster Bot...").queue());
-
-            } else {
-
-                CommandHandler.handleCommand(CommandHandler.parser.parse(message.getContentRaw(), event));
-
-            }
-
-        }
-
-
 
     }
 

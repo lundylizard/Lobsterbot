@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
+import javax.annotation.Nonnull;
 import java.awt.*;
 
 public class BdaysCommand implements Command {
@@ -15,14 +16,14 @@ public class BdaysCommand implements Command {
     private LobsterDatabase database = Lobsterbot.database;
 
     @Override
-    public void action(String[] args, MessageReceivedEvent event) {
+    public void action(String[] args, @Nonnull MessageReceivedEvent event) {
 
         Role lobsterroledebug = event.getGuild().getRoleById("797546283606212719");
         Role lobsterrole = event.getGuild().getRoleById("621077872701997062");
 
         if (args.length == 0) {
 
-            event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("**Lobster Gang Birthdays**").setColor(0xc078eb).setDescription(database.getBdays(event)).build()).queue();
+            event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("**Lobster Gang Birthdays**").setColor(0xc078eb).setDescription(database.getBirthdays(event)).build()).queue();
 
         } else if (args.length >= 1) {
 
@@ -39,10 +40,9 @@ public class BdaysCommand implements Command {
                                     Member member = event.getMessage().getMentionedMembers().get(0);
 
                                     if (member != null) {
+                                        if (!database.isInEXPDB(member)) {
 
-                                        if (!database.isInBdaysDatabase(member.getId())) {
-
-                                            database.insertBday(member.getId(), Integer.parseInt(args[2]), Integer.parseInt(args[3]), member.getUser().getName());
+                                            database.insertBirthday(member, Integer.parseInt(args[2]), Integer.parseInt(args[3]));
                                             event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("Successfully added member").setColor(Color.GREEN).setDescription("Successfully added member " + member.getAsMention() + " to the database.").build()).queue();
 
                                         } else {
@@ -84,15 +84,14 @@ public class BdaysCommand implements Command {
                     }
 
                 } else if (args[0].equalsIgnoreCase("remove")) {
-
                     if (args.length == 2) {
 
                         Member member = event.getMessage().getMentionedMembers().get(0);
 
                         if (member != null) {
-                            if (database.isInBdaysDatabase(member.getId())) {
+                            if (database.isInBirthdayDatabase(member)) {
 
-                                database.deleteBday(member.getId());
+                                database.deleteBirthday(member);
                                 event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.GREEN).setTitle("Successfully removed member").setDescription("Successfully removed member " + member.getAsMention() + " from the database.").build()).queue();
 
 
@@ -128,18 +127,6 @@ public class BdaysCommand implements Command {
             }
 
         }
-
-    }
-
-    @Override
-    public void executed(boolean success, MessageReceivedEvent event) {
-
-    }
-
-    @Override
-    public boolean called(String[] args, MessageReceivedEvent event) {
-
-        return false;
 
     }
 

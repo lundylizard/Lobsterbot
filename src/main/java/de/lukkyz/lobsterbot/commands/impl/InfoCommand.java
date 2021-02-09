@@ -29,7 +29,7 @@ public class InfoCommand implements Command {
             content += "Members: " + event.getGuild().getMembers().size() + " | Emotes: " + event.getGuild().getEmotes().size() + "\n\n";
             content += "Commands (" + CommandHandler.commands.size() + "): \n> " + CommandHandler.commands.keySet().toString().replace("[", "").replace("]", "") + "\n\n";
 
-            event.getMessage().getTextChannel().sendMessage(new EmbedBuilder().setDescription(content).setTitle("__Server and Bot Info__:").setFooter(event.getMessage().getId() + "-" + event.getTextChannel().getName(), event.getAuthor().getAvatarUrl()).setThumbnail(event.getJDA().getSelfUser().getAvatarUrl()).setColor(Color.RED).build()).queue();
+            event.getMessage().getTextChannel().sendMessage(new EmbedBuilder().setDescription(content).setTitle("__Server and Bot Info__:").setThumbnail(event.getJDA().getSelfUser().getAvatarUrl()).setColor(Color.ORANGE).build()).queue();
 
 
         } else if (args.length >= 1) {
@@ -55,13 +55,4 @@ public class InfoCommand implements Command {
 
     }
 
-    @Override
-    public void executed(boolean success, MessageReceivedEvent event) {
-
-    }
-
-    @Override
-    public boolean called(String[] args, MessageReceivedEvent event) {
-        return false;
-    }
 }
