@@ -18,25 +18,26 @@ import net.dv8tion.jda.api.entities.Activity;
 
 import javax.security.auth.login.LoginException;
 
-public class Lobsterbot {
-
-    private static final boolean DEBUG = true;
+public class Lobsterbot extends Thread {
 
     public static LobsterDatabase database;
     public static UserManager userManager;
-
     public static ExperienceManager experienceManager;
     public static BotManager botManager;
     public static BlacklistManager blacklistManager;
-    private static JDABuilder builder;
 
     /* Bot Variables*/
     public static final String PREFIX = "!";
+    private static final boolean DEBUG = true;
 
-    @Deprecated
-    public static void main(String[] args) throws LoginException {
+    public static void main(String[] args) {
+        new Lobsterbot().start();
+    }
 
-        builder = new JDABuilder(AccountType.BOT);
+    @Override
+    public void run() {
+
+        JDABuilder builder = new JDABuilder(AccountType.BOT);
 
         database = new LobsterDatabase();
         experienceManager = new ExperienceManager();
@@ -55,18 +56,20 @@ public class Lobsterbot {
         builder.addEventListeners(new VoiceChatChangeListener());
         builder.addEventListeners(new RoleAddedEvent());
 
+        /* Add Command Handlers */
         CommandHandler.commands.put("info", new InfoCommand());
         CommandHandler.commands.put("bdays", new BdaysCommand());
         CommandHandler.commands.put("remind", new ReminderCommand());
         CommandHandler.commands.put("exp", new EXPCommand());
-        CommandHandler.commands.put("level", new EXPCommand());
         CommandHandler.commands.put("leaderboard", new LeaderboardCommand());
-        CommandHandler.commands.put("leaderboards", new LeaderboardCommand());
         CommandHandler.commands.put("donate", new DonateCommand());
-        CommandHandler.commands.put("transfer", new TransferCommand());
-        CommandHandler.commands.put("blacklist", new BlacklistCommand());
 
-        builder.build();
+        try {
+            builder.build();
+        } catch (LoginException e) {
+            e.printStackTrace();
+        }
+
         LobsterDatabase.connect();
 
     }

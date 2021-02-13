@@ -2,6 +2,7 @@ package de.lukkyz.lobsterbot.utils;
 
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class LobsterDatabase {
             properties.setProperty("user", USERNAME);
             properties.setProperty("password", PASSWORD);
             properties.setProperty("MaxPooledStatements", "250");
+            properties.setProperty("autoReconnect", "true");
 
         }
 
@@ -33,7 +35,7 @@ public class LobsterDatabase {
 
     }
 
-    public static Connection connect() {
+    public static void connect() {
 
         if (connection == null) {
 
@@ -49,8 +51,6 @@ public class LobsterDatabase {
             }
 
         }
-
-        return connection;
 
     }
 
@@ -115,19 +115,19 @@ public class LobsterDatabase {
         } catch (SQLException e) {
 
             e.printStackTrace();
-            return e.getStackTrace().toString();
+            return e.getCause().getMessage();
 
         }
 
     }
 
-    public void insertBirthday(Member member, int day, int month) {
+    public void insertBirthday(@NotNull Member member, int day, int month) {
 
         try {
 
             connect();
             Statement statement = connection.createStatement();
-            statement.executeUpdate("insert into birthdays values (" + member.getIdLong() + ", " + member.getUser().getName() + ", " + month + ", " + day + ")");
+            statement.executeUpdate("insert into birthdays values (" + member.getIdLong() + ", \"" + member.getUser().getName() + "\", " + month + ", " + day + ")");
             statement.close();
             disconnect();
 
@@ -139,7 +139,7 @@ public class LobsterDatabase {
 
     }
 
-    public void deleteBirthday(Member member) {
+    public void deleteBirthday(@NotNull Member member) {
 
         try {
 
@@ -183,37 +183,6 @@ public class LobsterDatabase {
     }
 
     /* Blacklisted Users */
-
-    public String getBlacklistedUsers(MessageReceivedEvent event) {
-
-        String end = "";
-
-        try {
-
-            connect();
-            Statement statement = connection.createStatement();
-            ResultSet results = statement.executeQuery("select * from blacklisted_users");
-
-            while (results.next()) {
-
-                long id = results.getLong("discord_id");
-                String name = results.getString("name");
-
-                end += name + " (" + id + "); ";
-
-            }
-
-            results.close();
-            statement.close();
-            disconnect();
-
-            return end;
-
-        } catch (SQLException e) {
-            return e.getStackTrace().toString();
-        }
-
-    }
 
     public boolean getUserBlacklisted(long id) {
 
@@ -297,6 +266,7 @@ public class LobsterDatabase {
 
             }
 
+
         } catch (SQLException e) {
 
             e.printStackTrace();
@@ -313,9 +283,13 @@ public class LobsterDatabase {
 
             connect();
             Statement statement = connection.createStatement();
-            ResultSet results = statement.executeQuery("select executed_commands from bot");
+            ResultSet results = statement.executeQuery("select * from bot");
 
-            return results.getInt("executed_commands");
+            while (results.next()) {
+
+                return results.getInt("executed_commands");
+
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -345,9 +319,13 @@ public class LobsterDatabase {
 
             connect();
             Statement statement = connection.createStatement();
-            ResultSet results = statement.executeQuery("select messages_sent from bot");
+            ResultSet results = statement.executeQuery("select * from bot");
 
-            return results.getInt("messages_sent");
+            while (results.next()) {
+
+                return results.getInt("messages_sent");
+
+            }
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -373,7 +351,7 @@ public class LobsterDatabase {
 
     /* EXP Database Management */
 
-    public void createEXPDBEntry(Member member) {
+    public void createEXPDBEntry(@NotNull Member member) {
 
         try {
 
@@ -508,7 +486,7 @@ public class LobsterDatabase {
 
     }
 
-    public void setLevelFromUser(Member member, int level) {
+    public void setLevelFromUser(@NotNull Member member, int level) {
 
         try {
 
@@ -560,7 +538,7 @@ public class LobsterDatabase {
 
     }
 
-    public void setOverallEXPFromUser(Member member, int amount) {
+    public void setOverallEXPFromUser(@NotNull Member member, int amount) {
 
         try {
 
@@ -576,15 +554,35 @@ public class LobsterDatabase {
 
     }
 
+    public double getEXPOutput() {
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            ResultSet results = statement.executeQuery("select * from bot");
+
+            while (results.next()) {
+
+                return results.getDouble("exp_output");
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 1.0D;
+    }
+
     /* User Database Management */
 
-    public void createUserDBEntry(Member member) {
+    public void createUserDBEntry(@NotNull Member member) {
 
         try {
 
             connect();
             Statement statement = connection.createStatement();
-            statement.executeUpdate("insert into users values(" + member.getIdLong() + ", \"" + member.getUser().getName() + "\", 0, true");
+            statement.executeUpdate("insert into users values(" + member.getIdLong() + ", \"" + member.getUser().getName() + "\", 0, 1)");
 
         } catch (SQLException e) {
 
@@ -600,7 +598,7 @@ public class LobsterDatabase {
 
             connect();
             Statement statement = connection.createStatement();
-            ResultSet results = statement.executeQuery("select discord_id from users");
+            ResultSet results = statement.executeQuery("select * from users");
             List<Long> ids = new ArrayList<>();
 
             while (results.next()) {
@@ -630,16 +628,12 @@ public class LobsterDatabase {
                 connect();
                 Statement statement = connection.createStatement();
                 ResultSet results = statement.executeQuery("select * from users where discord_id = " + member.getIdLong());
-                HashMap<Long, Integer> messages = new HashMap<>();
 
                 while (results.next()) {
 
-                    int amount = results.getInt("messages");
-                    messages.put(member.getIdLong(), amount);
+                    return results.getInt("messages");
 
                 }
-
-                return messages.get(member.getIdLong());
 
             } else {
 
@@ -665,7 +659,7 @@ public class LobsterDatabase {
 
                 connect();
                 Statement statement = connection.createStatement();
-                statement.executeUpdate("update users set messages = " + amount + " where id = " + member.getIdLong());
+                statement.executeUpdate("update users set messages = " + amount + " where discord_id = " + member.getIdLong());
 
             }
 
@@ -712,7 +706,7 @@ public class LobsterDatabase {
 
     }
 
-    public void setUserOnServer(Member member, boolean state) {
+    public void setUserOnServer(Member member, int state) {
 
         try {
 
@@ -729,11 +723,6 @@ public class LobsterDatabase {
             e.printStackTrace();
 
         }
-
-    }
-
-    /* Transfer data from old to new database */
-    public void transferData(MessageReceivedEvent event) {
 
     }
 

@@ -6,7 +6,7 @@
 
     <groupId>de.lukkyz.lobsterbot</groupId>
     <artifactId>lobsterbot</artifactId>
-    <version>1.0-Lobster</version>
+    <version>1.7-Beta</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>

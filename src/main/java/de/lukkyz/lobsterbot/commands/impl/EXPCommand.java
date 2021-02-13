@@ -5,6 +5,7 @@ import de.lukkyz.lobsterbot.commands.Command;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
@@ -13,10 +14,14 @@ public class EXPCommand implements Command {
     private String output = "";
 
     @Override
-    public void action(String[] args, MessageReceivedEvent event) {
+    public void action(@NotNull String[] args, MessageReceivedEvent event) {
 
         if (args.length == 0) {
             if (Lobsterbot.database.isInEXPDB(event.getMember())) {
+
+                if (Lobsterbot.experienceManager.getEXPMultiplier() != 1.0D) {
+                    output += "*Current EXP Multiplier: " + Lobsterbot.experienceManager.getEXPMultiplier() + "*\n\n";
+                }
 
                 output += ":sparkles: EXP: " + Lobsterbot.experienceManager.getEXP(event.getMember()) + " | :lobster: Level: " + Lobsterbot.experienceManager.getLevel(event.getMember()) + "\n\n";
                 output += "Experience needed for next level: " + (Lobsterbot.experienceManager.calculateEXPneeded(Lobsterbot.experienceManager.getLevel(event.getMember())) - Lobsterbot.experienceManager.getEXP(event.getMember())) + "\n";
@@ -35,6 +40,10 @@ public class EXPCommand implements Command {
         } else {
 
             Member target = event.getMessage().getMentionedMembers().get(0);
+
+            if (Lobsterbot.experienceManager.getEXPMultiplier() != 1.0D) {
+                output += "*Current EXP Multiplier: " + Lobsterbot.experienceManager.getEXPMultiplier() + "*\n\n";
+            }
 
             output += ":sparkles: EXP: " + Lobsterbot.experienceManager.getEXP(target) + " | :lobster: Level: " + Lobsterbot.experienceManager.getLevel(target) + "\n\n";
             output += "Experience needed for next level: " + (Lobsterbot.experienceManager.calculateEXPneeded(Lobsterbot.experienceManager.getLevel(event.getMember())) - Lobsterbot.experienceManager.getEXP(event.getMember())) + "\n";

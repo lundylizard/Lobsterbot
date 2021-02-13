@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ExperienceManager {
 
-    private LobsterDatabase database = Lobsterbot.database;
+    private final LobsterDatabase database = Lobsterbot.database;
 
     public void addEXP(Member member, int amount) {
         database.setEXPFromUser(member, (getEXP(member) + amount));
@@ -39,8 +39,16 @@ public class ExperienceManager {
         return database.getLevelFromUser(member);
     }
 
-    public int calculateEXPneeded(int level) {
-        return 500 * ((int) Math.pow(level, 2)) - (500 * level) + 100;
+    public void addOverallEXP(Member member, int amount) {
+        setOverallEXP(member, (getOverallEXP(member) + amount));
+    }
+
+    public void setOverallEXP(Member member, int amount) {
+        database.setOverallEXPFromUser(member, amount);
+    }
+
+    public int getOverallEXP(Member member) {
+        return database.getOverallEXPFromUser(member);
     }
 
     public List<String> getEXPLeaderboard(MessageReceivedEvent event) {
@@ -74,17 +82,12 @@ public class ExperienceManager {
 
     }
 
-    public void addOverallEXP(Member member, int amount) {
-        setOverallEXP(member, (getOverallEXP(member) + amount));
+    public int calculateEXPneeded(int level) {
+        return 500 * ((int) Math.pow(level, 2)) - (500 * level) + 100;
     }
 
-    public void setOverallEXP(Member member, int amount) {
-        database.setOverallEXPFromUser(member, amount);
+    public double getEXPMultiplier() {
+        return database.getEXPOutput();
     }
-
-    public int getOverallEXP(Member member) {
-        return database.getOverallEXPFromUser(member);
-    }
-
 
 }

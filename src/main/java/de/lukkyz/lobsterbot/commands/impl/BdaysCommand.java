@@ -5,21 +5,18 @@ import de.lukkyz.lobsterbot.commands.Command;
 import de.lukkyz.lobsterbot.utils.LobsterDatabase;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
 
 public class BdaysCommand implements Command {
 
-    private LobsterDatabase database = Lobsterbot.database;
+    private final LobsterDatabase database = Lobsterbot.database;
 
     @Override
-    public void action(String[] args, @Nonnull MessageReceivedEvent event) {
-
-        Role lobsterroledebug = event.getGuild().getRoleById("797546283606212719");
-        Role lobsterrole = event.getGuild().getRoleById("621077872701997062");
+    public void action(@NotNull String[] args, @Nonnull MessageReceivedEvent event) {
 
         if (args.length == 0) {
 
@@ -29,7 +26,7 @@ public class BdaysCommand implements Command {
 
             // args[1] = @user; args[2] = month; args[3] = day
 
-            if (event.getGuild().getMember(event.getAuthor()).getRoles().contains(lobsterroledebug) || event.getGuild().getMember(event.getAuthor()).getRoles().contains(lobsterrole)) {
+            if (Lobsterbot.userManager.isModerator(event.getMember())) {
 
                 if (args[0].equalsIgnoreCase("add")) {
                     if (args.length == 4) {
@@ -42,7 +39,7 @@ public class BdaysCommand implements Command {
                                     if (member != null) {
                                         if (!database.isInEXPDB(member)) {
 
-                                            database.insertBirthday(member, Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+                                            database.insertBirthday(member, Integer.parseInt(args[3]), Integer.parseInt(args[2]));
                                             event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("Successfully added member").setColor(Color.GREEN).setDescription("Successfully added member " + member.getAsMention() + " to the database.").build()).queue();
 
                                         } else {
@@ -103,7 +100,7 @@ public class BdaysCommand implements Command {
 
                         } else {
 
-                            event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.RED).setTitle("An Error occurred").setDescription("The user you have tried to remove is no longer on the server. Please notify an developer to remove them from the database.").build()).queue();
+                            event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.RED).setTitle("An Error occurred").setDescription("The user you have tried to remove is no longer on the server. Please notify a developer to remove them from the database.").build()).queue();
 
                         }
 
@@ -116,7 +113,7 @@ public class BdaysCommand implements Command {
 
                 } else {
 
-                    event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.RED).setTitle("An Error occurred").setDescription("Unknown arguments. \nUsage: `!bdays [add/remove] [@user] <month> <day>`").build()).queue();
+                    event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.RED).setTitle("An Error occurred").setDescription("Unknown arguments. \nUsage: `!bdays [add/remove]`").build()).queue();
 
                 }
 

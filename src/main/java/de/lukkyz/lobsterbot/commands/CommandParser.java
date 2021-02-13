@@ -2,12 +2,13 @@ package de.lukkyz.lobsterbot.commands;
 
 import de.lukkyz.lobsterbot.Lobsterbot;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 public class CommandParser {
 
-    public CommandContainer parse(String raw, MessageReceivedEvent event) {
+    public CommandContainer parse(@NotNull String raw, MessageReceivedEvent event) {
 
         String beheaded = raw.replaceFirst(Lobsterbot.PREFIX, "");
         String[] splitBeheaded = beheaded.split(" ");

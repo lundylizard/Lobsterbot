@@ -17,7 +17,7 @@ public class BotManager {
     }
 
     public void addExecutedCommands(int amount) {
-        Lobsterbot.database.setExecutedCommandsAmount(getExecutedCommands() + amount);
+        setExecutedCommands(getExecutedCommands() + amount);
     }
 
     public int getSentMessages() {
@@ -29,7 +29,7 @@ public class BotManager {
     }
 
     public void addSentMessages(int amount) {
-        Lobsterbot.database.setMessagesSentAmount(getSentMessages() + amount);
+        setSentMessages(getSentMessages() + amount);
     }
 
 }
