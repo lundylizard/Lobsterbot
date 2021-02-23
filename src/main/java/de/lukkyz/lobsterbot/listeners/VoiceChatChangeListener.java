@@ -1,5 +1,6 @@
 package de.lukkyz.lobsterbot.listeners;
 
+import de.lukkyz.lobsterbot.Lobsterbot;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
@@ -14,18 +15,37 @@ public class VoiceChatChangeListener extends ListenerAdapter {
     @Override
     public void onGuildVoiceJoin(@NotNull GuildVoiceJoinEvent event) {
 
-        TextChannel voiceChannel = event.getGuild().getTextChannelById(621441669539299328L);
-        if (voiceChannel != null)
-            voiceChannel.sendMessage(new EmbedBuilder().setColor(Color.GREEN).setDescription(event.getEntity().getEffectiveName() + " joined the voice chat.").build()).queue();
+        if (!(Lobsterbot.blacklistManager.userBlacklisted(event.getMember()))) {
+
+            final TextChannel voiceChannel = event.getGuild().getTextChannelById(621441669539299328L);
+
+            if (voiceChannel != null && !(event.getEntity().getUser().isBot())) {
+
+                voiceChannel.sendMessage(new EmbedBuilder().setColor(Color.GREEN).setDescription(event.getEntity().getEffectiveName() + " joined the voice chat.").build()).queue();
+                System.out.println("> " + event.getEntity().getUser().getName() + " joined the voice chat.");
+
+            }
+
+        }
 
     }
 
     @Override
     public void onGuildVoiceLeave(@NotNull GuildVoiceLeaveEvent event) {
 
-        TextChannel voiceChannel = event.getGuild().getTextChannelById(621441669539299328L);
-        if (voiceChannel != null)
-            voiceChannel.sendMessage(new EmbedBuilder().setColor(Color.RED).setDescription(event.getEntity().getEffectiveName() + " left the voice chat.").build()).queue();
+        if (!(Lobsterbot.blacklistManager.userBlacklisted(event.getMember()))) {
+
+            final TextChannel voiceChannel = event.getGuild().getTextChannelById(621441669539299328L);
+
+            if (voiceChannel != null && !(event.getEntity().getUser().isBot())) {
+
+                voiceChannel.sendMessage(new EmbedBuilder().setColor(Color.RED).setDescription(event.getEntity().getEffectiveName() + " left the voice chat.").build()).queue();
+                System.out.println("> " + event.getEntity().getUser().getName() + " left the voice chat.");
+
+            }
+
+        }
 
     }
+
 }

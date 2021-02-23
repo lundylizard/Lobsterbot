@@ -88,7 +88,7 @@ public class BdaysCommand implements Command {
                         if (member != null) {
                             if (database.isInBirthdayDatabase(member)) {
 
-                                database.deleteBirthday(member);
+                                database.deleteBirthday(member.getUser().getName());
                                 event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.GREEN).setTitle("Successfully removed member").setDescription("Successfully removed member " + member.getAsMention() + " from the database.").build()).queue();
 
 
@@ -103,7 +103,6 @@ public class BdaysCommand implements Command {
                             event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.RED).setTitle("An Error occurred").setDescription("The user you have tried to remove is no longer on the server. Please notify a developer to remove them from the database.").build()).queue();
 
                         }
-
 
                     } else {
 

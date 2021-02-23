@@ -14,10 +14,10 @@ public class DonateCommand implements Command {
 
         String output = "";
 
+        output += "*Credits go to Mcfluff (Birthday Suffix) & Lu (Progress Bar).*\n\n";
         output += "If you want to support me and my development, consider donating.\n";
-        output += "Donations go into server costs, new equipment & energy drinks.\n\n";
+        output += "Donations flow into server costs, new equipment & energy drinks.\n\n";
         output += "**PayPal:** https://paypal.me/Lukkyz1337\n";
-        output += "*More to come soon.*";
 
         event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.CYAN).setTitle("Donate to lundylizard").setDescription(output).build()).queue();
 

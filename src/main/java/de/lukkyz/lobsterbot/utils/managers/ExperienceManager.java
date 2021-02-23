@@ -55,20 +55,24 @@ public class ExperienceManager {
 
         List<String> leaderboard = new ArrayList<>();
         int rank = 0;
+        String[] ranking = {":first_place:", ":second_place:", ":third_place:", "4", "5", "6", "7", "8", "9", "10"};
 
         try {
 
             LobsterDatabase.connect();
             Statement statement = LobsterDatabase.connection.createStatement();
-            ResultSet results = statement.executeQuery("select * from exp order by exp.level DESC, exp.amount DESC");
+            ResultSet results = statement.executeQuery("select * from exp order by exp.level desc, exp.amount desc");
 
-            while (results.next()) {
+            while (results.next() && rank < 10) {
 
                 Member member = event.getGuild().getMemberById(results.getLong("discord_id"));
 
-                rank++;
-                if (getOverallEXP(member) != -101 && member != null)
-                    leaderboard.add(rank + ") " + member.getAsMention() + " -- [:lobster: Level " + results.getInt("level") + "] Overall EXP: " + getOverallEXP(event.getGuild().getMemberById(results.getLong("discord_id"))));
+                if (member != null) {
+
+                    rank++;
+                    leaderboard.add((ranking[rank - 1].startsWith(":") ? ranking[rank - 1] + ") " : " **" + rank + "**) ") + member.getAsMention() + " -- [Level " + results.getInt("level") + "] Overall EXP: **" + getOverallEXP(event.getGuild().getMemberById(results.getLong("discord_id"))) + "**");
+
+                }
 
             }
 
@@ -88,6 +92,25 @@ public class ExperienceManager {
 
     public double getEXPMultiplier() {
         return database.getEXPOutput();
+    }
+
+    public double getPercentage(Member member) {
+        return Math.round(((double) getEXP(member) / calculateEXPneeded(getLevel(member))) * 100d);
+    }
+
+    // credits to lu
+    public String getProgressionBar(Member member) {
+
+        StringBuilder buffer = new StringBuilder();
+        for (int i = 0; i < ((int) getPercentage(member) / 10); i++) {
+            buffer.append("#");
+        }
+        while (10 > buffer.length()) {
+            buffer.append("0");
+        }
+
+        return buffer.toString().replace("#", ":yellow_square:").replace("0", ":black_large_square:");
+
     }
 
 }

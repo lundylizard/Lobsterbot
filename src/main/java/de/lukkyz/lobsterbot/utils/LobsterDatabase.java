@@ -19,7 +19,7 @@ public class LobsterDatabase {
     public static Connection connection;
     private static Properties properties;
 
-    private static Properties getProperties() {
+    public static Properties getProperties() {
 
         if (properties == null) {
 
@@ -139,13 +139,13 @@ public class LobsterDatabase {
 
     }
 
-    public void deleteBirthday(@NotNull Member member) {
+    public void deleteBirthday(@NotNull String name) {
 
         try {
 
             connect();
             Statement statement = connection.createStatement();
-            statement.executeUpdate("delete from birthdays where discord_id = " + member.getIdLong());
+            statement.executeUpdate("delete from birthdays where name = \"" + name + "\"");
             statement.close();
             disconnect();
 
@@ -175,10 +175,9 @@ public class LobsterDatabase {
         } catch (SQLException e) {
 
             e.printStackTrace();
+            return false;
 
         }
-
-        return false;
 
     }
 
@@ -555,6 +554,7 @@ public class LobsterDatabase {
     }
 
     public double getEXPOutput() {
+
         try {
 
             connect();
@@ -572,6 +572,21 @@ public class LobsterDatabase {
         }
 
         return 1.0D;
+
+    }
+
+    public void setEXPOutput(double output) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("update bot set exp_output = " + output);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     /* User Database Management */
@@ -722,6 +737,24 @@ public class LobsterDatabase {
 
             e.printStackTrace();
 
+        }
+
+    }
+
+    /* General Database Management */
+
+    public boolean executeQuery(String input) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            statement.execute(input);
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
 
     }

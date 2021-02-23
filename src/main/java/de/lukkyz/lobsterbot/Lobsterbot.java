@@ -31,11 +31,15 @@ public class Lobsterbot extends Thread {
     private static final boolean DEBUG = true;
 
     public static void main(String[] args) {
+        System.out.println(DEBUG ? "Starting bot in debug mode..." : "Starting bot...");
         new Lobsterbot().start();
     }
 
     @Override
     public void run() {
+
+        setName("Bot");
+        setPriority(10);
 
         JDABuilder builder = new JDABuilder(AccountType.BOT);
 
@@ -46,15 +50,17 @@ public class Lobsterbot extends Thread {
         blacklistManager = new BlacklistManager();
 
         builder.setToken(botManager.getBotToken());
-        builder.setStatus(DEBUG ? OnlineStatus.IDLE : OnlineStatus.ONLINE);
+        builder.setStatus(DEBUG ? OnlineStatus.DO_NOT_DISTURB : OnlineStatus.ONLINE);
         builder.setAutoReconnect(true);
         builder.setActivity(DEBUG ? Activity.playing("in debug mode.") : Activity.listening("commands."));
+        builder.setMaxReconnectDelay(32);
 
         /* Register Event Listeners */
         builder.addEventListeners(new MessageListener());
         builder.addEventListeners(new GuildJoinListener());
         builder.addEventListeners(new VoiceChatChangeListener());
         builder.addEventListeners(new RoleAddedEvent());
+        builder.addEventListeners(new AdminCommand.AdminCommandEvents());
 
         /* Add Command Handlers */
         CommandHandler.commands.put("info", new InfoCommand());
@@ -63,6 +69,7 @@ public class Lobsterbot extends Thread {
         CommandHandler.commands.put("exp", new EXPCommand());
         CommandHandler.commands.put("leaderboard", new LeaderboardCommand());
         CommandHandler.commands.put("donate", new DonateCommand());
+        CommandHandler.commands.put("admin", new AdminCommand());
 
         try {
             builder.build();
