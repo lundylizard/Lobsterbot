@@ -17,19 +17,17 @@ public class LeaderboardCommand implements Command {
         if (args.length == 0) {
 
             List<String> leaderboard = Lobsterbot.experienceManager.getEXPLeaderboard(event);
-            String output = "";
+            StringBuilder output = new StringBuilder();
 
             if (Lobsterbot.experienceManager.getEXPMultiplier() != 1.0D) {
-                output += "*Current EXP Multiplier: " + Lobsterbot.experienceManager.getEXPMultiplier() + "*\n\n";
+                output.append("*Current EXP Multiplier: ").append(Lobsterbot.experienceManager.getEXPMultiplier()).append("*\n\n");
             }
 
-            for (int i = 0; i < leaderboard.size(); i++) {
-
-                output += leaderboard.get(i) + "\n";
-
+            for (String s : leaderboard) {
+                output.append(s).append("\n");
             }
 
-            event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("**Lobster Gang EXP Leaderboard**").setColor(Color.RED).setDescription(output).build()).queue();
+            event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("**Lobster Gang EXP Leaderboard**").setColor(Color.RED).setDescription(output.toString()).build()).queue();
 
         }
 

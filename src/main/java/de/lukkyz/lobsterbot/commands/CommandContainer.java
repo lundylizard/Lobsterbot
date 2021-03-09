@@ -5,8 +5,8 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 public class CommandContainer {
 
     public String raw, beheaded, invoke;
-    public final String[] splitBeheaded, args;
-    public final MessageReceivedEvent event;
+    public String[] splitBeheaded, args;
+    public MessageReceivedEvent event;
 
     public CommandContainer(String raw, String beheaded, String[] splitBeheaded, String invoke, String[] args, MessageReceivedEvent event) {
 

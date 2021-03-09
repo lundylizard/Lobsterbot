@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
+import java.util.Objects;
 
 public class BdaysCommand implements Command {
 
@@ -20,13 +21,13 @@ public class BdaysCommand implements Command {
 
         if (args.length == 0) {
 
-            event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("**Lobster Gang Birthdays**").setColor(0xc078eb).setDescription(database.getBirthdays(event)).build()).queue();
+            event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("**Lobster Gang Birthdays**").setColor(Color.ORANGE).setDescription(database.getBirthdays(event)).build()).queue();
 
         } else if (args.length >= 1) {
 
             // args[1] = @user; args[2] = month; args[3] = day
 
-            if (Lobsterbot.userManager.isModerator(event.getMember())) {
+            if (Lobsterbot.userManager.isModerator(Objects.requireNonNull(event.getMember()))) {
 
                 if (args[0].equalsIgnoreCase("add")) {
                     if (args.length == 4) {
@@ -37,10 +38,10 @@ public class BdaysCommand implements Command {
                                     Member member = event.getMessage().getMentionedMembers().get(0);
 
                                     if (member != null) {
-                                        if (!database.isInEXPDB(member)) {
+                                        if (!database.isInBirthdayDatabase(member)) {
 
                                             database.insertBirthday(member, Integer.parseInt(args[3]), Integer.parseInt(args[2]));
-                                            event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("Successfully added member").setColor(Color.GREEN).setDescription("Successfully added member " + member.getAsMention() + " to the database.").build()).queue();
+                                            event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("Successfully added member").setColor(Color.GREEN).setDescription("Successfully added member " + member.getAsMention() + " to the birthday list.").build()).queue();
 
                                         } else {
 
@@ -100,7 +101,7 @@ public class BdaysCommand implements Command {
 
                         } else {
 
-                            event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.RED).setTitle("An Error occurred").setDescription("The user you have tried to remove is no longer on the server. Please notify a developer to remove them from the database.").build()).queue();
+                            event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.RED).setTitle("An Error occurred").setDescription("The user you have tried to remove is no longer on the server. Please notify lundylizard to remove them from the list.").build()).queue();
 
                         }
 
@@ -118,7 +119,7 @@ public class BdaysCommand implements Command {
 
             } else {
 
-                event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.RED).setTitle("An Error occurred").setDescription("You do not have permissions to modify birthdays.").build()).queue();
+                event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.RED).setTitle("An Error occurred").setDescription("You do not have permissions to modify birthdays.\nPlease message a moderator to add or remove a birthday.").build()).queue();
 
             }
 

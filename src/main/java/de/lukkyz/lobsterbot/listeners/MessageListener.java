@@ -11,6 +11,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import javax.annotation.Nonnull;
 import java.awt.*;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,7 @@ public class MessageListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
 
-        if (!(Lobsterbot.blacklistManager.userBlacklisted(event.getMember()))) {
+        if (!(Lobsterbot.blacklistManager.userBlacklisted(Objects.requireNonNull(event.getMember())))) {
 
             Message message = event.getMessage();
             Lobsterbot.botManager.addSentMessages(1);
@@ -36,10 +37,10 @@ public class MessageListener extends ListenerAdapter {
 
             /*Experience Management */
 
-            if (!message.getContentRaw().startsWith(Lobsterbot.PREFIX) && !message.getAuthor().isBot() && event.getGuild().getIdLong() != 705938723824730122L && !AdminCommand.awaitingMySQLInput.contains(event.getAuthor().getIdLong())) {
+            if (!message.getContentRaw().startsWith(Lobsterbot.PREFIX) && !message.getAuthor().isBot() && event.getGuild().getIdLong() != 705938723824730122L && !AdminCommand.awaitingMySQLInput.contains(event.getAuthor().getIdLong()) && !event.getTextChannel().getName().equalsIgnoreCase("serious")) {
 
                 int exp = (int) (50 * Lobsterbot.experienceManager.getEXPMultiplier());
-                int chance = 15;
+                int chance = Lobsterbot.experienceManager.getAdditionalEXPChance();
 
                 if (!Lobsterbot.database.isInEXPDB(event.getMember())) {
 
@@ -91,6 +92,23 @@ public class MessageListener extends ListenerAdapter {
 
                 event.getTextChannel().sendMessage("I love lobsters.").queue();
                 System.out.println("> " + event.getAuthor().getName() + " triggered \"I love lobsters.\" easter egg in " + message.getGuild().getName() + " (#" + event.getTextChannel().getName() + ")");
+
+            }
+
+            /* Fluff Counter */
+
+            if (event.getMessage().getContentRaw().equalsIgnoreCase("fluff++")) {
+
+                Lobsterbot.botManager.addCounter("fluff", 1);
+                event.getTextChannel().sendMessage("> Fluff has said that he's not gay " + Lobsterbot.botManager.getCounter("fluff") + " times so far.").queue();
+
+            }
+
+            /* funny kanye gif */
+
+            if (event.getMessage().getContentRaw().equalsIgnoreCase(event.getJDA().getSelfUser().getAsMention())) {
+
+                event.getTextChannel().sendMessage("https://media.discordapp.net/attachments/548357641898819584/778788017770856478/kanye.gif").queue();
 
             }
 

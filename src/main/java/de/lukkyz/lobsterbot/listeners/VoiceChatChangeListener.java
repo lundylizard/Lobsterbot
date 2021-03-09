@@ -21,7 +21,7 @@ public class VoiceChatChangeListener extends ListenerAdapter {
 
             if (voiceChannel != null && !(event.getEntity().getUser().isBot())) {
 
-                voiceChannel.sendMessage(new EmbedBuilder().setColor(Color.GREEN).setDescription(event.getEntity().getEffectiveName() + " joined the voice chat.").build()).queue();
+                voiceChannel.sendMessage(new EmbedBuilder().setColor(Color.GREEN).setDescription(Lobsterbot.botManager.formatToEmoteMessage(event.getEntity().getEffectiveName(), event.getEntity()) + " joined the voice chat.").build()).queue();
                 System.out.println("> " + event.getEntity().getUser().getName() + " joined the voice chat.");
 
             }
@@ -39,7 +39,7 @@ public class VoiceChatChangeListener extends ListenerAdapter {
 
             if (voiceChannel != null && !(event.getEntity().getUser().isBot())) {
 
-                voiceChannel.sendMessage(new EmbedBuilder().setColor(Color.RED).setDescription(event.getEntity().getEffectiveName() + " left the voice chat.").build()).queue();
+                voiceChannel.sendMessage(new EmbedBuilder().setColor(Color.RED).setDescription(Lobsterbot.botManager.formatToEmoteMessage(event.getEntity().getEffectiveName(), event.getEntity()) + " left the voice chat.").build()).queue();
                 System.out.println("> " + event.getEntity().getUser().getName() + " left the voice chat.");
 
             }

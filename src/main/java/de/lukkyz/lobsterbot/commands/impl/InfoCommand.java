@@ -26,14 +26,14 @@ public class InfoCommand implements Command {
             final Member owner = event.getGuild().getOwner();
 
             if (lundy != null) {
-                content += "**Lobster Bot** - programmed by " + lundy.getAsMention() + " using JDA\n\n";
+                content += "**Lobster Bot** v" + Lobsterbot.VERSION + " b" + Lobsterbot.BUILD + " - programmed by " + lundy.getAsMention() + " using JDA\n\n";
             } else {
                 content += "**Lobster Bot** - programmed by **@lundylizard** using JDA\n\n";
             }
 
             content += owner != null ? "**Server Owner:** " + owner.getAsMention() + "\n" : "";
             content += "**Members:** " + event.getGuild().getMembers().size() + " | **Emotes:** " + event.getGuild().getEmotes().size() + "\n\n";
-            content += "**Commands executed: **" + Lobsterbot.botManager.getExecutedCommands() + " | **Messages sent:** " + Lobsterbot.botManager.getSentMessages() + "\n";
+            content += "[Recorded] **Commands executed: **" + Lobsterbot.botManager.getExecutedCommands() + " | **Messages sent:** " + Lobsterbot.botManager.getSentMessages() + "\n\n";
             content += "Commands (" + CommandHandler.commands.size() + "): \n> " + CommandHandler.commands.keySet().toString().replace("[", "").replace("]", "") + "\n\n";
 
             event.getMessage().getTextChannel().sendMessage(new EmbedBuilder().setDescription(content).setTitle("__Server and Bot Info__:").setThumbnail(event.getJDA().getSelfUser().getAvatarUrl()).setColor(Color.ORANGE).build()).queue();
@@ -53,7 +53,7 @@ public class InfoCommand implements Command {
                     content += mentioned.getAsMention() + " | " + mentioned.getEffectiveName() + "\n\n";
                     content += "Account created on **" + mentioned.getTimeCreated().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).replace("T", " ").substring(0, mentioned.getTimeCreated().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).length() - 4) + "**\n";
                     content += "Server Joined on **" + mentioned.getTimeJoined().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).replace("T", " ").substring(0, mentioned.getTimeJoined().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME).length() - 4) + "**\n\n";
-                    content += "**Messages sent:** " + Lobsterbot.userManager.getMessagesSent(mentioned) + "\n\n";
+                    content += "**Messages recorded:** " + Lobsterbot.userManager.getMessagesSent(mentioned) + "\n\n";
                     content += "**Roles (" + mentioned.getRoles().size() + "):**\n> ";
 
                     for (int i = 0; i < mentioned.getRoles().size(); i++) {

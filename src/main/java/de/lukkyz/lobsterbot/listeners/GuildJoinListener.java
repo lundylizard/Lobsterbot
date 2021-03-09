@@ -16,9 +16,8 @@ public class GuildJoinListener extends ListenerAdapter {
     @Override
     public void onGuildMemberJoin(@Nonnull GuildMemberJoinEvent event) {
 
-        System.out.println("> " + event.getUser().getName() + " joined the server");
+        System.out.println("> " + event.getUser().getName() + " joined the server!");
 
-        joinmessage += "**WELCOME TO THE LOBSTER GANG**\n\n";
         joinmessage += "We're glad you found your way to our little community.\n";
         joinmessage += "A moderator of ours has to approve you. This might take a while depending on if someone is available right now.\n";
         joinmessage += "Make sure to read the rules and enjoy your stay!\n\n";

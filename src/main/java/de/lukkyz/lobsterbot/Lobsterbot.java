@@ -4,7 +4,6 @@ import de.lukkyz.lobsterbot.commands.CommandHandler;
 import de.lukkyz.lobsterbot.commands.impl.*;
 import de.lukkyz.lobsterbot.listeners.GuildJoinListener;
 import de.lukkyz.lobsterbot.listeners.MessageListener;
-import de.lukkyz.lobsterbot.listeners.RoleAddedEvent;
 import de.lukkyz.lobsterbot.listeners.VoiceChatChangeListener;
 import de.lukkyz.lobsterbot.utils.LobsterDatabase;
 import de.lukkyz.lobsterbot.utils.managers.BlacklistManager;
@@ -26,9 +25,11 @@ public class Lobsterbot extends Thread {
     public static BotManager botManager;
     public static BlacklistManager blacklistManager;
 
-    /* Bot Variables*/
+    public static final double VERSION = 1.4D;
     public static final String PREFIX = "!";
-    private static final boolean DEBUG = true;
+    public static final int BUILD = 13;
+    /* Bot Variables*/
+    private static final boolean DEBUG = false;
 
     public static void main(String[] args) {
         System.out.println(DEBUG ? "Starting bot in debug mode..." : "Starting bot...");
@@ -44,10 +45,10 @@ public class Lobsterbot extends Thread {
         JDABuilder builder = new JDABuilder(AccountType.BOT);
 
         database = new LobsterDatabase();
-        experienceManager = new ExperienceManager();
-        userManager = new UserManager();
-        botManager = new BotManager();
-        blacklistManager = new BlacklistManager();
+        experienceManager = new ExperienceManager(database);
+        userManager = new UserManager(database);
+        botManager = new BotManager(database);
+        blacklistManager = new BlacklistManager(database);
 
         builder.setToken(botManager.getBotToken());
         builder.setStatus(DEBUG ? OnlineStatus.DO_NOT_DISTURB : OnlineStatus.ONLINE);
@@ -59,8 +60,6 @@ public class Lobsterbot extends Thread {
         builder.addEventListeners(new MessageListener());
         builder.addEventListeners(new GuildJoinListener());
         builder.addEventListeners(new VoiceChatChangeListener());
-        builder.addEventListeners(new RoleAddedEvent());
-        builder.addEventListeners(new AdminCommand.AdminCommandEvents());
 
         /* Add Command Handlers */
         CommandHandler.commands.put("info", new InfoCommand());
@@ -70,6 +69,7 @@ public class Lobsterbot extends Thread {
         CommandHandler.commands.put("leaderboard", new LeaderboardCommand());
         CommandHandler.commands.put("donate", new DonateCommand());
         CommandHandler.commands.put("admin", new AdminCommand());
+        //CommandHandler.commands.put("color", new ColorCommand());
 
         try {
             builder.build();

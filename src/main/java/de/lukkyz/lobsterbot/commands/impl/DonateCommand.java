@@ -12,9 +12,7 @@ public class DonateCommand implements Command {
     @Override
     public void action(String[] args, @NotNull MessageReceivedEvent event) {
 
-        String output = "";
-
-        output += "*Credits go to Mcfluff (Birthday Suffix) & Lu (Progress Bar).*\n\n";
+        String output = "" + "*Credits go to Mcfluff (Birthday Suffix) & Lu (Progress Bar).*\n\n";
         output += "If you want to support me and my development, consider donating.\n";
         output += "Donations flow into server costs, new equipment & energy drinks.\n\n";
         output += "**PayPal:** https://paypal.me/Lukkyz1337\n";

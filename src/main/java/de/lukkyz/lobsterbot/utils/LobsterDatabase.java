@@ -12,14 +12,14 @@ import java.util.Properties;
 
 public class LobsterDatabase {
 
-    private static final String DATABASE_URL = "jdbc:mysql://localhost:3306/lobsterbotv2";
+    private static final String DATABASE_URL = "jdbc:mysql://localhost/lobsterbotv2?autoReconnect=true";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "";
 
     public static Connection connection;
     private static Properties properties;
 
-    public static Properties getProperties() {
+    private static Properties getProperties() {
 
         if (properties == null) {
 
@@ -27,7 +27,6 @@ public class LobsterDatabase {
             properties.setProperty("user", USERNAME);
             properties.setProperty("password", PASSWORD);
             properties.setProperty("MaxPooledStatements", "250");
-            properties.setProperty("autoReconnect", "true");
 
         }
 
@@ -589,8 +588,45 @@ public class LobsterDatabase {
 
     }
 
+    public int getEXPChance() {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            ResultSet results = statement.executeQuery("select * from bot");
+
+            while (results.next()) {
+
+                return results.getInt("exp_chance");
+
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+
+    }
+
+    public void setEXPChance(int chance) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("update bot set exp_chance = " + chance);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     /* User Database Management */
 
+    @Deprecated
     public void createUserDBEntry(@NotNull Member member) {
 
         try {
@@ -607,6 +643,7 @@ public class LobsterDatabase {
 
     }
 
+    @Deprecated
     public boolean isInUserDB(Member member) {
 
         try {
@@ -741,20 +778,44 @@ public class LobsterDatabase {
 
     }
 
-    /* General Database Management */
+    /* Counter Database Management */
 
-    public boolean executeQuery(String input) {
+    public int getCounterAmount(String counter) {
 
         try {
 
             connect();
             Statement statement = connection.createStatement();
-            statement.execute(input);
-            return true;
+            ResultSet results = statement.executeQuery("select * from counters");
+
+            while (results.next()) {
+
+                return results.getInt(counter);
+
+            }
 
         } catch (SQLException e) {
+
             e.printStackTrace();
-            return false;
+
+        }
+
+        return -1;
+
+    }
+
+    public void setCounterAmount(String counter, int amount) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("update counters set " + counter + " = " + amount);
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
         }
 
     }

@@ -42,18 +42,25 @@ public class EXPCommand implements Command {
 
             final Member target = event.getMessage().getMentionedMembers().get(0);
 
-            if (Lobsterbot.experienceManager.getEXPMultiplier() != 1.0D) {
-                output += "*Current EXP Multiplier: " + Lobsterbot.experienceManager.getEXPMultiplier() + "*\n\n";
+            if (target != null) {
+
+                if (Lobsterbot.experienceManager.getEXPMultiplier() != 1.0D) {
+                    output += "*Current EXP Multiplier: " + Lobsterbot.experienceManager.getEXPMultiplier() + "*\n\n";
+                }
+
+                output += ":sparkles: **EXP:** " + Lobsterbot.experienceManager.getEXP(target) + " | :lobster: **Level:** " + Lobsterbot.experienceManager.getLevel(target) + "\n\n";
+                output += "**Experience needed for next level: **" + (Lobsterbot.experienceManager.calculateEXPneeded(Lobsterbot.experienceManager.getLevel(target)) - Lobsterbot.experienceManager.getEXP(target)) + "\n";
+                output += "**Overall EXP: **" + Lobsterbot.experienceManager.getOverallEXP(target) + "\n\n";
+                output += Lobsterbot.experienceManager.getProgressionBar(target) + " » **" + Lobsterbot.experienceManager.getPercentage(target) + "%**";
+
+                event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setTitle(target.getEffectiveName().endsWith("s") ? target.getEffectiveName() + "' EXP" : target.getEffectiveName() + "'s EXP").setDescription(output).build()).queue();
+
+                output = "";
+
+            } else {
+
+
             }
-
-            output += ":sparkles: **EXP:** " + Lobsterbot.experienceManager.getEXP(target) + " | :lobster: **Level:** " + Lobsterbot.experienceManager.getLevel(target) + "\n\n";
-            output += "**Experience needed for next level: **" + (Lobsterbot.experienceManager.calculateEXPneeded(Lobsterbot.experienceManager.getLevel(target)) - Lobsterbot.experienceManager.getEXP(target)) + "\n";
-            output += "**Overall EXP: **" + Lobsterbot.experienceManager.getOverallEXP(target) + "\n\n";
-            output += Lobsterbot.experienceManager.getProgressionBar(target) + " » **" + Lobsterbot.experienceManager.getPercentage(target) + "%**";
-
-            event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setTitle(target.getEffectiveName().endsWith("s") ? target.getEffectiveName() + "' EXP" : target.getEffectiveName() + "'s EXP").setDescription(output).build()).queue();
-
-            output = "";
 
         }
 

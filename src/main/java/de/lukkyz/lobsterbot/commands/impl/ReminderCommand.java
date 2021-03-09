@@ -17,14 +17,14 @@ public class ReminderCommand implements Command {
     public void action(@NotNull String[] args, MessageReceivedEvent event) {
 
         int time;
-        String reason = "";
+        StringBuilder reason = new StringBuilder();
         TimeUnit timeunit;
 
         if (args.length < 3) {
 
             event.getTextChannel().sendMessage("Missing arguments!\nPlease use: `!remind <time> <unit> <reason>`").queue();
 
-        } else if (args.length > 3) {
+        } else {
 
             try {
 
@@ -38,12 +38,12 @@ public class ReminderCommand implements Command {
                 }
 
                 for (int i = 2; i < args.length; i++) {
-                    reason += args[i] + " ";
+                    reason.append(args[i]).append(" ");
                 }
 
-                String reason_f = reason;
-                event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setTitle("Reminder set!").setDescription("Reminding you in **" + time + " " + timeunit.name().toLowerCase() + "** about " + reason.substring(0, reason.length() - 1) + "!").build()).queue();
-                event.getAuthor().openPrivateChannel().queueAfter(time, timeunit, (channel -> channel.sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setDescription("Hey! I'm here to remind you about **" + reason_f.substring(0, reason_f.length() - 1) + "!**").setTitle("Reminder").build()).queue()));
+                String reason_f = reason.toString();
+                event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setTitle("Reminder set!").setDescription("Reminding you in **" + time + " " + timeunit.name().toLowerCase() + "** about *" + reason.substring(0, reason.length() - 1) + "*!").build()).queue();
+                event.getAuthor().openPrivateChannel().queueAfter(time, timeunit, (channel -> channel.sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setDescription("Hey! I'm here to remind you about **" + reason_f.substring(0, reason_f.length() - 1) + "**!").setTitle("Reminder!").build()).queue()));
 
             } catch (IllegalArgumentException e) {
 

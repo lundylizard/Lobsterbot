@@ -1,9 +1,9 @@
 package de.lukkyz.lobsterbot.utils.managers;
 
-import de.lukkyz.lobsterbot.Lobsterbot;
 import de.lukkyz.lobsterbot.utils.LobsterDatabase;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.jetbrains.annotations.Contract;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,7 +13,12 @@ import java.util.List;
 
 public class ExperienceManager {
 
-    private final LobsterDatabase database = Lobsterbot.database;
+    private LobsterDatabase database;
+
+    @Contract(pure = true)
+    public ExperienceManager(LobsterDatabase lobsterDatabase) {
+        this.database = lobsterDatabase;
+    }
 
     public void addEXP(Member member, int amount) {
         database.setEXPFromUser(member, (getEXP(member) + amount));
@@ -94,8 +99,13 @@ public class ExperienceManager {
         return database.getEXPOutput();
     }
 
+    public int getAdditionalEXPChance() {
+        return database.getEXPChance();
+    }
+
     public double getPercentage(Member member) {
-        return Math.round(((double) getEXP(member) / calculateEXPneeded(getLevel(member))) * 100d);
+        double exp = ((double) getEXP(member) / (double) calculateEXPneeded(getLevel(member))) * 100D;
+        return Math.round(exp * 100.0D) / 100.0D;
     }
 
     // credits to lu

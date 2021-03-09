@@ -1,16 +1,22 @@
 package de.lukkyz.lobsterbot.utils.managers;
 
-import de.lukkyz.lobsterbot.Lobsterbot;
+import de.lukkyz.lobsterbot.utils.LobsterDatabase;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.awt.*;
+import java.util.Objects;
 
 public class UserManager {
 
-    public void createRoleForUser(@NotNull Member member) {
-        member.getGuild().createRole().setName(member.getUser().getName()).setColor(Color.CYAN).queue();
+    private LobsterDatabase database;
+
+    @Contract(pure = true)
+    public UserManager(LobsterDatabase lobsterDatabase) {
+        this.database = lobsterDatabase;
     }
 
     public void addMessagesSent(Member member, int amount) {
@@ -18,27 +24,57 @@ public class UserManager {
     }
 
     public void setMessagesSent(Member member, int amount) {
-        Lobsterbot.database.setMessagesSentFromUser(member, amount);
+        database.setMessagesSentFromUser(member, amount);
     }
 
     public int getMessagesSent(Member member) {
-        return Lobsterbot.database.getMessagesSentFromUser(member);
+        return database.getMessagesSentFromUser(member);
     }
 
     public boolean isOnServer(Member member) {
-        return Lobsterbot.database.isUserOnServer(member);
+        return database.isUserOnServer(member);
     }
 
     public void setOnServer(Member member, boolean onServer) {
-        Lobsterbot.database.setUserOnServer(member, onServer ? 1 : 0);
+        database.setUserOnServer(member, onServer ? 1 : 0);
     }
 
     public boolean isModerator(@NotNull Member member) {
 
-        Role MOD_DEBUG = member.getGuild().getRoleById("797546283606212719");
-        Role MODERATOR = member.getGuild().getRoleById("621077872701997062");
+        final Role MOD_DEBUG = member.getGuild().getRoleById("797546283606212719"), MODERATOR = member.getGuild().getRoleById("621077872701997062");
 
-        return (member.getGuild().getMember(member.getUser()).getRoles().contains(MOD_DEBUG) || member.getGuild().getMember(member.getUser()).getRoles().contains(MODERATOR));
+        return (Objects.requireNonNull(member.getGuild().getMember(member.getUser())).getRoles().contains(MOD_DEBUG) || Objects.requireNonNull(member.getGuild().getMember(member.getUser())).getRoles().contains(MODERATOR));
+
+    }
+
+    public void createUserRole(@Nonnull Member member, Color color) {
+
+        member.getGuild().createRole().setColor(color).setName(member.getUser().getName()).setMentionable(false).queue();
+
+    }
+
+    public void giveUserRole(@Nonnull Member member) {
+
+        for (Role role : member.getGuild().getRoles()) {
+
+            if (role.getName().equalsIgnoreCase(member.getUser().getName())) {
+
+                member.getGuild().addRoleToMember(member, role).queue();
+
+            }
+
+        }
+
+    }
+
+    public boolean hasUserRole(@NotNull Member member) {
+
+        for (Role role : member.getRoles()) {
+            return role.getName().equalsIgnoreCase(member.getUser().getName());
+        }
+
+        return false;
+
     }
 
 }
