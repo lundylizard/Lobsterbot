@@ -1,13 +1,12 @@
 package de.lukkyz.lobsterbot.listeners;
 
-import de.lukkyz.lobsterbot.Lobsterbot;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
-import net.dv8tion.jda.api.events.guild.member.GuildMemberRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
+import java.util.Objects;
 
 public class GuildJoinListener extends ListenerAdapter {
 
@@ -24,24 +23,8 @@ public class GuildJoinListener extends ListenerAdapter {
         joinmessage += "- The Lobster Gang :lobster:";
 
         event.getUser().openPrivateChannel().queue(channel -> channel.sendMessage(new EmbedBuilder().setColor(Color.RED).setTitle("**WELCOME TO THE LOBSTER GANG**").setDescription(joinmessage).build()).queue());
-
         System.out.println("> " + event.getUser().getName() + " joined the server");
+        event.getGuild().createRole().setName(Objects.requireNonNull(event.getMember()).getUser().getName()).setMentionable(false).queue();
 
     }
-
-    @Override
-    public void onGuildMemberRemove(@Nonnull GuildMemberRemoveEvent event) {
-
-        if (Lobsterbot.userManager.isOnServer(event.getMember())) {
-
-            Lobsterbot.userManager.setOnServer(event.getMember(), false);
-
-        } else {
-
-            throw new IllegalStateException("User was is not on server, but should be removed");
-
-        }
-
-    }
-
 }

@@ -23,12 +23,9 @@ public class BdaysCommand implements Command {
 
             event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("**Lobster Gang Birthdays**").setColor(Color.ORANGE).setDescription(database.getBirthdays(event)).build()).queue();
 
-        } else if (args.length >= 1) {
-
-            // args[1] = @user; args[2] = month; args[3] = day
+        } else {
 
             if (Lobsterbot.userManager.isModerator(Objects.requireNonNull(event.getMember()))) {
-
                 if (args[0].equalsIgnoreCase("add")) {
                     if (args.length == 4) {
                         if (checkIfNumber(args[2]) && checkIfNumber(args[3])) {
@@ -74,7 +71,6 @@ public class BdaysCommand implements Command {
 
                         }
 
-
                     } else {
 
                         event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.RED).setTitle("An Error occurred").setDescription("Insufficient arguments. \nUsage: `!bdays add [@user] [month] [day]`").build()).queue();
@@ -91,7 +87,6 @@ public class BdaysCommand implements Command {
 
                                 database.deleteBirthday(member.getUser().getName());
                                 event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.GREEN).setTitle("Successfully removed member").setDescription("Successfully removed member " + member.getAsMention() + " from the database.").build()).queue();
-
 
                             } else {
 

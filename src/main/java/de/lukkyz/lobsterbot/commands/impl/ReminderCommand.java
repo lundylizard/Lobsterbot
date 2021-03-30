@@ -22,7 +22,7 @@ public class ReminderCommand implements Command {
 
         if (args.length < 3) {
 
-            event.getTextChannel().sendMessage("Missing arguments!\nPlease use: `!remind <time> <unit> <reason>`").queue();
+            event.getTextChannel().sendMessage(new EmbedBuilder().setDescription("Missing arguments!\nPlease use: `!remind <time> <unit> <reason>`").setColor(Color.RED).build()).queue();
 
         } else {
 
@@ -31,19 +31,25 @@ public class ReminderCommand implements Command {
                 timeunit = TimeUnit.valueOf(args[1].toUpperCase());
 
                 try {
+
                     time = Integer.parseInt(args[0]);
+
                 } catch (NumberFormatException e) {
-                    event.getTextChannel().sendMessage("`" + args[0] + "` is not a number... How am I supposed to remind you in `" + args[0] + "` " + timeunit.name().toLowerCase() + "?!").queue();
+
+                    event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("An Error occurred").setDescription("`" + args[0] + "` is not a valid number!").setColor(Color.RED).build()).queue();
                     return;
+
                 }
 
                 for (int i = 2; i < args.length; i++) {
+
                     reason.append(args[i]).append(" ");
+
                 }
 
                 String reason_f = reason.toString();
-                event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setTitle("Reminder set!").setDescription("Reminding you in **" + time + " " + timeunit.name().toLowerCase() + "** about *" + reason.substring(0, reason.length() - 1) + "*!").build()).queue();
-                event.getAuthor().openPrivateChannel().queueAfter(time, timeunit, (channel -> channel.sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setDescription("Hey! I'm here to remind you about **" + reason_f.substring(0, reason_f.length() - 1) + "**!").setTitle("Reminder!").build()).queue()));
+                event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setTitle("Reminder set!").setDescription("Reminding you in **" + time + " " + timeunit.name().toLowerCase() + "** about *" + reason + "*!").build()).queue();
+                event.getAuthor().openPrivateChannel().queueAfter(time, timeunit, (channel -> channel.sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setDescription("Hey! I'm here to remind you about **" + reason_f + "**!").setTitle("Reminder!").build()).queue()));
 
             } catch (IllegalArgumentException e) {
 

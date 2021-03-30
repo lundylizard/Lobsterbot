@@ -2,11 +2,13 @@ package de.lukkyz.lobsterbot.commands.impl;
 
 import de.lukkyz.lobsterbot.Lobsterbot;
 import de.lukkyz.lobsterbot.commands.Command;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class AdminCommand implements Command {
 
@@ -16,9 +18,35 @@ public class AdminCommand implements Command {
     public void action(@Nonnull String[] args, @Nonnull MessageReceivedEvent event) {
 
         if (event.getAuthor().getIdLong() == 251430066775392266L) {
+            if (args.length == 1) {
+                if (args[0].equalsIgnoreCase("check")) {
+                    if (Lobsterbot.botManager.checkVersion()) {
 
-            if (args.length == 2) {
+                        event.getTextChannel().sendMessage(":white_check_mark: Lobsterbot is up to date!").queue();
+                        event.getMessage().delete().queue();
 
+                    } else {
+
+                        event.getTextChannel().sendMessage(":x: Lobsterbot is not up to date! :x:\nCurrent Version: " + Lobsterbot.botManager.getCurrentVersion() + "\nLatest Version: " + Lobsterbot.botManager.getLatestVersion()).queue();
+                        event.getMessage().delete().queue();
+
+                    }
+
+                }
+
+                if (args[0].equalsIgnoreCase("create_roles")) {
+                    for (Member member : event.getGuild().getMembers()) {
+                        if (!member.getUser().isBot()) {
+
+                            event.getGuild().createRole().setName(Objects.requireNonNull(member).getUser().getName()).setMentionable(false).queue();
+
+                        }
+
+                    }
+
+                }
+
+            } else if (args.length == 2) {
                 if (args[0].equalsIgnoreCase("multiplier")) {
                     if (isDouble(args[1])) {
 

@@ -11,7 +11,7 @@ import java.awt.*;
 
 public class EXPCommand implements Command {
 
-    private String output = "";
+    private String output = "", footer = "";
 
     @Override
     public void action(@NotNull String[] args, MessageReceivedEvent event) {
@@ -20,7 +20,7 @@ public class EXPCommand implements Command {
             if (Lobsterbot.database.isInEXPDB(event.getMember())) {
 
                 if (Lobsterbot.experienceManager.getEXPMultiplier() != 1.0D) {
-                    output += "*Current EXP Multiplier: " + Lobsterbot.experienceManager.getEXPMultiplier() + "*\n\n";
+                    footer = "Current EXP Multiplier: " + Lobsterbot.experienceManager.getEXPMultiplier();
                 }
 
                 output += ":sparkles: **EXP:** " + Lobsterbot.experienceManager.getEXP(event.getMember()) + " | :lobster: **Level:** " + Lobsterbot.experienceManager.getLevel(event.getMember()) + "\n\n";
@@ -28,9 +28,10 @@ public class EXPCommand implements Command {
                 output += "**Overall EXP:** " + Lobsterbot.experienceManager.getOverallEXP(event.getMember()) + "\n\n";
                 output += Lobsterbot.experienceManager.getProgressionBar(event.getMember()) + " » **" + Lobsterbot.experienceManager.getPercentage(event.getMember()) + "%**";
 
-                event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setDescription(output).build()).queue();
+                event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setDescription(output).setFooter(footer).build()).queue();
 
                 output = "";
+                footer = "";
 
             } else {
 
@@ -45,7 +46,7 @@ public class EXPCommand implements Command {
             if (target != null) {
 
                 if (Lobsterbot.experienceManager.getEXPMultiplier() != 1.0D) {
-                    output += "*Current EXP Multiplier: " + Lobsterbot.experienceManager.getEXPMultiplier() + "*\n\n";
+                    footer = "Current EXP Multiplier: " + Lobsterbot.experienceManager.getEXPMultiplier();
                 }
 
                 output += ":sparkles: **EXP:** " + Lobsterbot.experienceManager.getEXP(target) + " | :lobster: **Level:** " + Lobsterbot.experienceManager.getLevel(target) + "\n\n";
@@ -53,12 +54,14 @@ public class EXPCommand implements Command {
                 output += "**Overall EXP: **" + Lobsterbot.experienceManager.getOverallEXP(target) + "\n\n";
                 output += Lobsterbot.experienceManager.getProgressionBar(target) + " » **" + Lobsterbot.experienceManager.getPercentage(target) + "%**";
 
-                event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setTitle(target.getEffectiveName().endsWith("s") ? target.getEffectiveName() + "' EXP" : target.getEffectiveName() + "'s EXP").setDescription(output).build()).queue();
+                event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setTitle(target.getEffectiveName().endsWith("s") ? target.getEffectiveName() + "' EXP" : target.getEffectiveName() + "'s EXP").setDescription(output).setFooter(footer).build()).queue();
 
                 output = "";
+                footer = "";
 
             } else {
 
+                event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.RED).setDescription("Could not find specified target.").build()).queue();
 
             }
 

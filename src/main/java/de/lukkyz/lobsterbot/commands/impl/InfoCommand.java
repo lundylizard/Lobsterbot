@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class InfoCommand implements Command {
 
@@ -25,15 +26,11 @@ public class InfoCommand implements Command {
             final User lundy = event.getJDA().getUserById("251430066775392266");
             final Member owner = event.getGuild().getOwner();
 
-            if (lundy != null) {
-                content += "**Lobster Bot** v" + Lobsterbot.VERSION + " b" + Lobsterbot.BUILD + " - programmed by " + lundy.getAsMention() + " using JDA\n\n";
-            } else {
-                content += "**Lobster Bot** - programmed by **@lundylizard** using JDA\n\n";
-            }
-
+            content += "**Lobster Bot** [v" + Lobsterbot.VERSION + "." + Lobsterbot.BUILD + "] - programmed by " + Objects.requireNonNull(lundy).getAsMention() + " using JDA\n\n";
+            content += "Bot online since " + BotManager.getUptime() + "\n";
             content += owner != null ? "**Server Owner:** " + owner.getAsMention() + "\n" : "";
             content += "**Members:** " + event.getGuild().getMembers().size() + " | **Emotes:** " + event.getGuild().getEmotes().size() + "\n\n";
-            content += "[Recorded] **Commands executed: **" + Lobsterbot.botManager.getExecutedCommands() + " | **Messages sent:** " + Lobsterbot.botManager.getSentMessages() + "\n\n";
+            content += "[Records] Commands executed: **" + Lobsterbot.botManager.getExecutedCommands() + "** | Messages sent: **" + Lobsterbot.botManager.getSentMessages() + "**\n\n";
             content += "Commands (" + CommandHandler.commands.size() + "): \n> " + CommandHandler.commands.keySet().toString().replace("[", "").replace("]", "") + "\n\n";
 
             event.getMessage().getTextChannel().sendMessage(new EmbedBuilder().setDescription(content).setTitle("__Server and Bot Info__:").setThumbnail(event.getJDA().getSelfUser().getAvatarUrl()).setColor(Color.ORANGE).build()).queue();

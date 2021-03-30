@@ -16,12 +16,8 @@ public class LeaderboardCommand implements Command {
 
         if (args.length == 0) {
 
-            List<String> leaderboard = Lobsterbot.experienceManager.getEXPLeaderboard(event);
+            List<String> leaderboard = Lobsterbot.experienceManager.getEXPLeaderboard(event, 10);
             StringBuilder output = new StringBuilder();
-
-            if (Lobsterbot.experienceManager.getEXPMultiplier() != 1.0D) {
-                output.append("*Current EXP Multiplier: ").append(Lobsterbot.experienceManager.getEXPMultiplier()).append("*\n\n");
-            }
 
             for (String s : leaderboard) {
                 output.append(s).append("\n");

@@ -31,10 +31,12 @@ public class UserManager {
         return database.getMessagesSentFromUser(member);
     }
 
+    @Deprecated
     public boolean isOnServer(Member member) {
         return database.isUserOnServer(member);
     }
 
+    @Deprecated
     public void setOnServer(Member member, boolean onServer) {
         database.setUserOnServer(member, onServer ? 1 : 0);
     }
@@ -47,12 +49,14 @@ public class UserManager {
 
     }
 
+    @Deprecated
     public void createUserRole(@Nonnull Member member, Color color) {
 
         member.getGuild().createRole().setColor(color).setName(member.getUser().getName()).setMentionable(false).queue();
 
     }
 
+    @Deprecated
     public void giveUserRole(@Nonnull Member member) {
 
         for (Role role : member.getGuild().getRoles()) {
@@ -69,11 +73,8 @@ public class UserManager {
 
     public boolean hasUserRole(@NotNull Member member) {
 
-        for (Role role : member.getRoles()) {
-            return role.getName().equalsIgnoreCase(member.getUser().getName());
-        }
-
-        return false;
+        Role role = member.getGuild().getRolesByName(member.getUser().getName(), true).get(0);
+        return member.getRoles().contains(role);
 
     }
 

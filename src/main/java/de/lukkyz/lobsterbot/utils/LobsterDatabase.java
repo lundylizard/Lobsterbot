@@ -12,7 +12,7 @@ import java.util.Properties;
 
 public class LobsterDatabase {
 
-    private static final String DATABASE_URL = "jdbc:mysql://localhost/lobsterbotv2?autoReconnect=true";
+    private static final String DATABASE_URL = "jdbc:mysql://localhost/lobsterbotv2?autoReconnect=true&useTimezone=true&serverTimezone=UTC";
     private static final String USERNAME = "root";
     private static final String PASSWORD = "";
 
@@ -766,7 +766,7 @@ public class LobsterDatabase {
 
                 connect();
                 Statement statement = connection.createStatement();
-                statement.executeUpdate("update users set on_server = " + state + " where id = " + member.getIdLong());
+                statement.executeUpdate("update users set on_server = " + state + " where discord_id = " + member.getIdLong());
 
             }
 

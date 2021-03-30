@@ -56,7 +56,7 @@ public class ExperienceManager {
         return database.getOverallEXPFromUser(member);
     }
 
-    public List<String> getEXPLeaderboard(MessageReceivedEvent event) {
+    public List<String> getEXPLeaderboard(MessageReceivedEvent event, int amount) {
 
         List<String> leaderboard = new ArrayList<>();
         int rank = 0;
@@ -68,7 +68,7 @@ public class ExperienceManager {
             Statement statement = LobsterDatabase.connection.createStatement();
             ResultSet results = statement.executeQuery("select * from exp order by exp.level desc, exp.amount desc");
 
-            while (results.next() && rank < 10) {
+            while (results.next() && rank < amount) {
 
                 Member member = event.getGuild().getMemberById(results.getLong("discord_id"));
 

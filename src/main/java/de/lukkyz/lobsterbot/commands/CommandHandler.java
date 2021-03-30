@@ -1,6 +1,6 @@
 package de.lukkyz.lobsterbot.commands;
 
-import de.lukkyz.lobsterbot.Lobsterbot;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -16,12 +16,22 @@ public class CommandHandler {
         if (commands.containsKey(Objects.requireNonNull(cmd).invoke)) {
 
             commands.get(cmd.invoke).action(cmd.args, cmd.event);
-            Lobsterbot.botManager.addExecutedCommands(1);
 
         }
 
     }
 
+    @Contract(pure = true)
+    public static HashMap<String, Command> getCommands() {
+        return commands;
+    }
+
+    public static void addCommand(String invoke, Command command) {
+        commands.put(invoke, command);
+    }
+
+    public static Command getCommand(String invoke) {
+        return commands.get(invoke);
+    }
+
 }
-
-

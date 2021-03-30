@@ -1,5 +1,6 @@
 package de.lukkyz.lobsterbot.utils.managers;
 
+import de.lukkyz.lobsterbot.Lobsterbot;
 import de.lukkyz.lobsterbot.utils.LobsterDatabase;
 import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Member;
@@ -7,7 +8,11 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
+import java.net.URL;
 
 public class BotManager {
 
@@ -85,6 +90,10 @@ public class BotManager {
         setCounter(counter, getCounter(counter) + amount);
     }
 
+    public void subCounter(String counter, int amount) {
+        setCounter(counter, getCounter(counter) - amount);
+    }
+
     public String formatToEmoteMessage(String string, @NotNull Member member) {
 
         for (Emote emote : member.getGuild().getEmotes()) {
@@ -92,6 +101,50 @@ public class BotManager {
         }
 
         return string;
+
+    }
+
+    public boolean checkVersion() {
+
+        try {
+
+            URL url = new URL("157.90.184.215/lobsterbot/version.txt");
+            BufferedReader in = new BufferedReader((new InputStreamReader(url.openStream())));
+            String newest_version = in.readLine();
+            String current_version = Lobsterbot.VERSION + "." + Lobsterbot.BUILD;
+
+            return newest_version.equalsIgnoreCase(current_version);
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+            return false;
+
+        }
+
+    }
+
+    public String getLatestVersion() {
+
+        try {
+
+            URL url = new URL("157.90.184.215/lobsterbot/version.txt");
+            BufferedReader in = new BufferedReader((new InputStreamReader(url.openStream())));
+
+            return in.readLine();
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+            return "-";
+
+        }
+
+    }
+
+    public String getCurrentVersion() {
+
+        return Lobsterbot.VERSION + "." + Lobsterbot.BUILD;
 
     }
 

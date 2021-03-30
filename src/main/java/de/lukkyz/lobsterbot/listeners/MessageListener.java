@@ -22,7 +22,7 @@ public class MessageListener extends ListenerAdapter {
 
         if (!(Lobsterbot.blacklistManager.userBlacklisted(Objects.requireNonNull(event.getMember())))) {
 
-            Message message = event.getMessage();
+            final Message message = event.getMessage();
             Lobsterbot.botManager.addSentMessages(1);
             Lobsterbot.userManager.addMessagesSent(event.getMember(), 1);
 
@@ -39,10 +39,11 @@ public class MessageListener extends ListenerAdapter {
 
             if (!message.getContentRaw().startsWith(Lobsterbot.PREFIX) && !message.getAuthor().isBot() && event.getGuild().getIdLong() != 705938723824730122L && !AdminCommand.awaitingMySQLInput.contains(event.getAuthor().getIdLong()) && !event.getTextChannel().getName().equalsIgnoreCase("serious")) {
 
+                // EXP Variables
                 int exp = (int) (50 * Lobsterbot.experienceManager.getEXPMultiplier());
                 int chance = Lobsterbot.experienceManager.getAdditionalEXPChance();
 
-                if (!Lobsterbot.database.isInEXPDB(event.getMember())) {
+                if (!Lobsterbot.database.isInEXPDB(event.getMember())) { // If user is not in EXP Database
 
                     Lobsterbot.database.createEXPDBEntry(event.getMember());
                     System.out.println("> Created EXP database entry for " + event.getMember().getUser().getName());
@@ -52,6 +53,7 @@ public class MessageListener extends ListenerAdapter {
 
                 } else {
 
+                    // Get message history and convert into spam int
                     List<Message> history = event.getTextChannel().getIterableHistory().complete().stream().limit(10).filter(msg -> !msg.equals(event.getMessage())).collect(Collectors.toList());
                     int spam = history.stream().filter(messages -> messages.getAuthor().equals(event.getAuthor()) && !messages.getAuthor().isBot()).filter(msg -> (event.getMessage().getTimeCreated().toEpochSecond() - msg.getTimeCreated().toEpochSecond()) < 6).collect(Collectors.toList()).size();
 
@@ -61,6 +63,7 @@ public class MessageListener extends ListenerAdapter {
                         Lobsterbot.experienceManager.addOverallEXP(event.getMember(), exp);
                         System.out.println("> " + event.getAuthor().getName() + " gained " + exp + " EXP (EXP needed for next level: " + (Lobsterbot.experienceManager.calculateEXPneeded(Lobsterbot.experienceManager.getLevel(event.getMember())) - Lobsterbot.experienceManager.getEXP(event.getMember())) + ")");
 
+                        // Additional EXP
                         if (new Random().nextInt(1000) <= chance) {
 
                             int random = (int) (((new Random().nextInt(50) * 10) + 10) * Lobsterbot.experienceManager.getEXPMultiplier());
@@ -73,6 +76,7 @@ public class MessageListener extends ListenerAdapter {
 
                     }
 
+                    // Level Up
                     while ((Lobsterbot.experienceManager.calculateEXPneeded(Lobsterbot.experienceManager.getLevel(event.getMember())) <= Lobsterbot.experienceManager.getEXP(event.getMember()))) {
 
                         Lobsterbot.experienceManager.setEXP(event.getMember(), Math.abs((Lobsterbot.experienceManager.calculateEXPneeded(Lobsterbot.experienceManager.getLevel(event.getMember())) - Lobsterbot.experienceManager.getEXP(event.getMember()))));
@@ -104,9 +108,16 @@ public class MessageListener extends ListenerAdapter {
 
             }
 
+            if (event.getMessage().getContentRaw().equalsIgnoreCase("fluff--")) {
+
+                Lobsterbot.botManager.subCounter("fluff", 1);
+                event.getTextChannel().sendMessage("> Fluff has said that he's not gay " + Lobsterbot.botManager.getCounter("fluff") + " times so far.").queue();
+
+            }
+
             /* funny kanye gif */
 
-            if (event.getMessage().getContentRaw().equalsIgnoreCase(event.getJDA().getSelfUser().getAsMention())) {
+            if (event.getMessage().getContentRaw().contains(event.getJDA().getSelfUser().getAsMention())) {
 
                 event.getTextChannel().sendMessage("https://media.discordapp.net/attachments/548357641898819584/778788017770856478/kanye.gif").queue();
 
