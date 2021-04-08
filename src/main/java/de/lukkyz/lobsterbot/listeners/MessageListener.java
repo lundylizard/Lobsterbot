@@ -2,7 +2,6 @@ package de.lukkyz.lobsterbot.listeners;
 
 import de.lukkyz.lobsterbot.Lobsterbot;
 import de.lukkyz.lobsterbot.commands.CommandHandler;
-import de.lukkyz.lobsterbot.commands.impl.AdminCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -37,7 +36,7 @@ public class MessageListener extends ListenerAdapter {
 
             /*Experience Management */
 
-            if (!message.getContentRaw().startsWith(Lobsterbot.PREFIX) && !message.getAuthor().isBot() && event.getGuild().getIdLong() != 705938723824730122L && !AdminCommand.awaitingMySQLInput.contains(event.getAuthor().getIdLong()) && !event.getTextChannel().getName().equalsIgnoreCase("serious")) {
+            if (!message.getContentRaw().startsWith(Lobsterbot.PREFIX) && !message.getAuthor().isBot() && event.getGuild().getIdLong() != 705938723824730122L && !event.getTextChannel().getName().equalsIgnoreCase("serious")) {
 
                 // EXP Variables
                 int exp = (int) (50 * Lobsterbot.experienceManager.getEXPMultiplier());

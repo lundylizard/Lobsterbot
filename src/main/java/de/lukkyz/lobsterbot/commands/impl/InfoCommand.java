@@ -26,7 +26,8 @@ public class InfoCommand implements Command {
             final User lundy = event.getJDA().getUserById("251430066775392266");
             final Member owner = event.getGuild().getOwner();
 
-            content += "**Lobster Bot** [v" + Lobsterbot.VERSION + "." + Lobsterbot.BUILD + "] - programmed by " + Objects.requireNonNull(lundy).getAsMention() + " using JDA\n\n";
+            content += "**Lobster Bot** [v" + Lobsterbot.VERSION + "." + Lobsterbot.BUILD + "] - programmed by " + Objects.requireNonNull(lundy).getAsMention() + " using JDA\n";
+            content += "*Lines of code: 2450*\n\n";
             content += "Bot online since " + BotManager.getUptime() + "\n";
             content += owner != null ? "**Server Owner:** " + owner.getAsMention() + "\n" : "";
             content += "**Members:** " + event.getGuild().getMembers().size() + " | **Emotes:** " + event.getGuild().getEmotes().size() + "\n\n";
@@ -34,7 +35,6 @@ public class InfoCommand implements Command {
             content += "Commands (" + CommandHandler.commands.size() + "): \n> " + CommandHandler.commands.keySet().toString().replace("[", "").replace("]", "") + "\n\n";
 
             event.getMessage().getTextChannel().sendMessage(new EmbedBuilder().setDescription(content).setTitle("__Server and Bot Info__:").setThumbnail(event.getJDA().getSelfUser().getAvatarUrl()).setColor(Color.ORANGE).build()).queue();
-
 
         } else if (args.length == 1) {
 

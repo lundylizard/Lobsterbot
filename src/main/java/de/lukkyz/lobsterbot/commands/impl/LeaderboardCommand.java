@@ -23,7 +23,7 @@ public class LeaderboardCommand implements Command {
                 output.append(s).append("\n");
             }
 
-            event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("**Lobster Gang EXP Leaderboard**").setColor(Color.RED).setDescription(output.toString()).build()).queue();
+            event.getTextChannel().sendMessage(new EmbedBuilder().setTitle("Lobster Gang EXP Leaderboard").setColor(Color.ORANGE).setDescription(output.toString()).build()).queue();
 
         }
 

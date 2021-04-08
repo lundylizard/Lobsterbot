@@ -108,7 +108,7 @@ public class ExperienceManager {
         return Math.round(exp * 100.0D) / 100.0D;
     }
 
-    // credits to lu
+    // credits to Lu :)
     public String getProgressionBar(Member member) {
 
         StringBuilder buffer = new StringBuilder();

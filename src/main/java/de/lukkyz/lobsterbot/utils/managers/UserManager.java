@@ -71,6 +71,7 @@ public class UserManager {
 
     }
 
+    @Deprecated
     public boolean hasUserRole(@NotNull Member member) {
 
         Role role = member.getGuild().getRolesByName(member.getUser().getName(), true).get(0);

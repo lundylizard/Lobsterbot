@@ -1,9 +1,12 @@
 package de.lukkyz.lobsterbot.utils;
 
+import de.lukkyz.lobsterbot.Lobsterbot;
+import de.lukkyz.lobsterbot.Secrets;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.awt.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,9 +15,9 @@ import java.util.Properties;
 
 public class LobsterDatabase {
 
-    private static final String DATABASE_URL = "jdbc:mysql://localhost/lobsterbotv2?autoReconnect=true&useTimezone=true&serverTimezone=UTC";
+    private static final String DATABASE_URL = Secrets.DATABASE_URL;
     private static final String USERNAME = "root";
-    private static final String PASSWORD = "";
+    private static final String PASSWORD = Lobsterbot.DEBUG ? "" : Secrets.PASSWORD_DATABASE;
 
     public static Connection connection;
     private static Properties properties;
@@ -811,6 +814,170 @@ public class LobsterDatabase {
             connect();
             Statement statement = connection.createStatement();
             statement.executeUpdate("update counters set " + counter + " = " + amount);
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+
+    }
+
+    /* Color Database Table Management */
+
+    public boolean isInColorDB(Member member) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            ResultSet results = statement.executeQuery("select * from colors");
+            List<Long> ids = new ArrayList<>();
+
+            while (results.next()) {
+
+                ids.add(results.getLong("discord_id"));
+
+            }
+
+            return ids.contains(member.getIdLong());
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+
+        return false;
+
+    }
+
+    public void createUserInColorDB(Member member, int color, String role_name, long role_id) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("insert into colors values(" + member.getIdLong() + ", " + color + ", \"" + role_name + "\", " + role_id + ")");
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+    }
+
+    public Color getColorFromUser(Member member) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            ResultSet results = statement.executeQuery("select * from colors where discord_id = " + member.getIdLong());
+
+            while (results.next()) {
+
+                return new Color(results.getInt("color"));
+
+            }
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+
+        return null;
+
+    }
+
+    public void changeColorFromUser(Member member, Color color) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("update colors set color = " + color.getRGB() + " where discord_id = " + member.getIdLong());
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+
+    }
+
+    public String getNameFromColorRoleFromUser(Member member) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            ResultSet results = statement.executeQuery("select * from colors where discord_id = " + member.getIdLong());
+
+            while (results.next()) {
+
+                return results.getString("role_name");
+
+            }
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+
+        return null;
+
+    }
+
+    public void setNameOfRoleFromUser(Member member, String role_name) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("update colors set role_name = \"" + role_name + "\" where discord_id = " + member.getIdLong());
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+
+    }
+
+    public long getColorRoleIdFromUser(Member member) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            ResultSet results = statement.executeQuery("select * from colors where discord_id = " + member.getIdLong());
+
+            while (results.next()) {
+
+                return results.getLong("role_id");
+
+            }
+
+        } catch (SQLException e) {
+
+            e.printStackTrace();
+
+        }
+
+        return -1L;
+
+    }
+
+    public void setColorRoleIdFromUser(Member member, long role_id) {
+
+        try {
+
+            connect();
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("update colors set role_id = " + role_id + " where discord_id = " + member.getIdLong());
 
         } catch (SQLException e) {
 

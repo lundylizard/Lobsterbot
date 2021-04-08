@@ -6,33 +6,15 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class AdminCommand implements Command {
-
-    public static List<Long> awaitingMySQLInput = new ArrayList<>();
 
     @Override
     public void action(@Nonnull String[] args, @Nonnull MessageReceivedEvent event) {
 
         if (event.getAuthor().getIdLong() == 251430066775392266L) {
             if (args.length == 1) {
-                if (args[0].equalsIgnoreCase("check")) {
-                    if (Lobsterbot.botManager.checkVersion()) {
-
-                        event.getTextChannel().sendMessage(":white_check_mark: Lobsterbot is up to date!").queue();
-                        event.getMessage().delete().queue();
-
-                    } else {
-
-                        event.getTextChannel().sendMessage(":x: Lobsterbot is not up to date! :x:\nCurrent Version: " + Lobsterbot.botManager.getCurrentVersion() + "\nLatest Version: " + Lobsterbot.botManager.getLatestVersion()).queue();
-                        event.getMessage().delete().queue();
-
-                    }
-
-                }
 
                 if (args[0].equalsIgnoreCase("create_roles")) {
                     for (Member member : event.getGuild().getMembers()) {
@@ -88,10 +70,8 @@ public class AdminCommand implements Command {
     private boolean isDouble(String input) {
 
         try {
-
             Double.parseDouble(input);
             return true;
-
         } catch (NumberFormatException e) {
             return false;
         }
@@ -101,10 +81,8 @@ public class AdminCommand implements Command {
     private boolean isInt(String input) {
 
         try {
-
             Integer.parseInt(input);
             return true;
-
         } catch (NumberFormatException e) {
             return false;
         }

@@ -4,6 +4,7 @@ import de.lukkyz.lobsterbot.commands.CommandHandler;
 import de.lukkyz.lobsterbot.commands.impl.*;
 import de.lukkyz.lobsterbot.listeners.GuildJoinListener;
 import de.lukkyz.lobsterbot.listeners.MessageListener;
+import de.lukkyz.lobsterbot.listeners.ReadyListener;
 import de.lukkyz.lobsterbot.listeners.VoiceChatChangeListener;
 import de.lukkyz.lobsterbot.utils.LobsterDatabase;
 import de.lukkyz.lobsterbot.utils.managers.BlacklistManager;
@@ -25,14 +26,14 @@ public class Lobsterbot {
     public static BlacklistManager blacklistManager;
 
     /* Bot Variables*/
-    public static final double VERSION = 1.5D;
+    public static final double VERSION = 1.6D;
     public static final String PREFIX = "!";
-    public static final int BUILD = 4;
-    private static final boolean DEBUG = false;
+    public static final int BUILD = 1;
+    public static final boolean DEBUG = true;
 
     public static void main(String[] args) {
 
-        JDABuilder builder = JDABuilder.createLight(botManager.getBotToken());
+        JDABuilder builder = JDABuilder.createLight(DEBUG ? Secrets.BOT_TOKEN_DEBUG : botManager.getBotToken());
 
         database = new LobsterDatabase();
         experienceManager = new ExperienceManager(database);
@@ -40,7 +41,6 @@ public class Lobsterbot {
         botManager = new BotManager(database);
         blacklistManager = new BlacklistManager(database);
 
-        builder.setToken(botManager.getBotToken());
         builder.setStatus(DEBUG ? OnlineStatus.DO_NOT_DISTURB : OnlineStatus.ONLINE);
         builder.setAutoReconnect(true);
         builder.setActivity(DEBUG ? Activity.playing("in debug mode") : Activity.listening("commands"));
@@ -50,6 +50,7 @@ public class Lobsterbot {
         builder.addEventListeners(new MessageListener());
         builder.addEventListeners(new GuildJoinListener());
         builder.addEventListeners(new VoiceChatChangeListener());
+        builder.addEventListeners(new ReadyListener());
 
         /* Add Command Handlers */
         CommandHandler.commands.put("info", new InfoCommand());
@@ -59,9 +60,7 @@ public class Lobsterbot {
         CommandHandler.commands.put("leaderboard", new LeaderboardCommand());
         CommandHandler.commands.put("donate", new DonateCommand());
         CommandHandler.commands.put("admin", new AdminCommand());
-        CommandHandler.commands.put("color", new ColorCommand());
-
-        LobsterDatabase.connect();
+        CommandHandler.commands.put("color", new ColorCommand(database));
 
         try {
             builder.build();

@@ -43,13 +43,14 @@ public class ReminderCommand implements Command {
 
                 for (int i = 2; i < args.length; i++) {
 
-                    reason.append(args[i]).append(" ");
+                    reason.append(args[i]);
+                    reason.append(" ");
 
                 }
 
                 String reason_f = reason.toString();
-                event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setTitle("Reminder set!").setDescription("Reminding you in **" + time + " " + timeunit.name().toLowerCase() + "** about *" + reason + "*!").build()).queue();
-                event.getAuthor().openPrivateChannel().queueAfter(time, timeunit, (channel -> channel.sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setDescription("Hey! I'm here to remind you about **" + reason_f + "**!").setTitle("Reminder!").build()).queue()));
+                event.getTextChannel().sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setTitle("Reminder set!").setDescription("Reminding you in **" + time + " " + timeunit.name().toLowerCase() + "** about *" + reason.deleteCharAt(reason.length() - 1) + "*!").build()).queue();
+                event.getAuthor().openPrivateChannel().queueAfter(time, timeunit, (channel -> channel.sendMessage(new EmbedBuilder().setColor(Color.ORANGE).setDescription("Hey! I'm here to remind you about **" + reason_f.substring(reason_f.length()) + "**!").setTitle("Reminder!").build()).queue()));
 
             } catch (IllegalArgumentException e) {
 
